@@ -1,34 +1,34 @@
 import 'dart:async';
 
 import 'package:deskcar/core/errors/failure_message_mapper.dart';
-import 'package:deskcar/features/garage/domain/entities/garage_enums.dart';
+import 'package:deskcar/features/papers/domain/entities/paper_document_category.dart';
+import 'package:deskcar/features/papers/presentation/cubit/papers_state.dart';
 import 'package:deskcar/features/repairs/domain/entities/service_record_entity.dart';
 import 'package:deskcar/features/repairs/domain/repositories/service_record_repository.dart';
-import 'package:deskcar/features/repairs/presentation/cubit/repairs_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class RepairsCubit extends Cubit<RepairsState> {
-  RepairsCubit(this._serviceRecordRepository) : super(const RepairsState.initial());
+class PapersCubit extends Cubit<PapersState> {
+  PapersCubit(this._serviceRecordRepository) : super(const PapersState.initial());
 
   final ServiceRecordRepository _serviceRecordRepository;
-  StreamSubscription<List<ServiceRecordEntity>>? _subscription;
+  StreamSubscription? _subscription;
 
   Future<void> load() async {
-    emit(state.copyWith(status: RepairsStatus.loading, errorMessage: null));
+    emit(state.copyWith(status: PapersStatus.loading, errorMessage: null));
 
     final result = await _serviceRecordRepository.getAllRecords();
     result.fold(
       (records) => emit(
         state.copyWith(
-          status: RepairsStatus.loaded,
-          records: _repairRecords(records),
+          status: PapersStatus.loaded,
+          records: _paperRecords(records),
         ),
       ),
       (failure) => emit(
         state.copyWith(
-          status: RepairsStatus.error,
+          status: PapersStatus.error,
           errorMessage: FailureMessageMapper.message(failure),
         ),
       ),
@@ -43,18 +43,16 @@ class RepairsCubit extends Cubit<RepairsState> {
 
         emit(
           state.copyWith(
-            status: RepairsStatus.loaded,
-            records: _repairRecords(records),
+            status: PapersStatus.loaded,
+            records: _paperRecords(records),
           ),
         );
       },
     );
   }
 
-  List<ServiceRecordEntity> _repairRecords(List<ServiceRecordEntity> records) {
-    return records
-        .where((record) => record.recordType == ServiceRecordType.repair)
-        .toList(growable: false);
+  List<ServiceRecordEntity> _paperRecords(List<ServiceRecordEntity> records) {
+    return records.where(isPaperRecord).toList(growable: false);
   }
 
   @override

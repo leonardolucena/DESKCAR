@@ -13,7 +13,7 @@ void main() {
     id: '1',
     vehicleId: 'demo',
     title: 'Manutenção periódica',
-    category: RepairCategory.maintenance,
+    categoryKey: RepairCategory.maintenance.name,
     serviceDate: DateTime(2026, 1, 24),
     mileage: 62437,
     totalAmount: 1105,

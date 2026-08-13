@@ -30,7 +30,7 @@ class ServiceRecordListTile extends StatelessWidget {
             vertical: AppSizes.spacingMd,
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _CategoryIcon(category: category),
               SizedBox(width: AppSizes.spacingMd),
@@ -65,12 +65,9 @@ class ServiceRecordListTile extends StatelessWidget {
               ),
               SizedBox(width: AppSizes.spacingSm),
               Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(top: AppSizes.spacingXs / 2),
-                  child: Text(
-                    record.title,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+                child: Text(
+                  record.title,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
               _CostColumn(record: record),
@@ -114,6 +111,7 @@ class _CostColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           AppCurrencyFormatter.formatAmount(record.totalAmount),

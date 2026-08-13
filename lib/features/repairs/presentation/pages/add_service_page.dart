@@ -206,7 +206,7 @@ class _AddServicePageState extends State<AddServicePage> {
       id: _existingRecord?.id ?? const Uuid().v4(),
       vehicleId: vehicleId ?? vehicle!.id,
       title: title,
-      category: _category,
+      categoryKey: _category.name,
       serviceDate: _serviceDate,
       mileage: mileage,
       totalAmount: totalAmount,

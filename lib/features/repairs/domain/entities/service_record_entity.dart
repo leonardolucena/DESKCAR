@@ -7,7 +7,7 @@ class ServiceRecordEntity extends Equatable {
     required this.id,
     required this.vehicleId,
     required this.title,
-    required this.category,
+    required this.categoryKey,
     required this.serviceDate,
     this.mileage,
     required this.totalAmount,
@@ -25,7 +25,7 @@ class ServiceRecordEntity extends Equatable {
   final String id;
   final String vehicleId;
   final String title;
-  final RepairCategory category;
+  final String categoryKey;
   final DateTime serviceDate;
   final double? mileage;
   final double totalAmount;
@@ -39,12 +39,14 @@ class ServiceRecordEntity extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
 
+  RepairCategory get category => RepairCategory.fromName(categoryKey);
+
   @override
   List<Object?> get props => [
         id,
         vehicleId,
         title,
-        category,
+        categoryKey,
         serviceDate,
         mileage,
         totalAmount,

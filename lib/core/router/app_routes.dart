@@ -3,6 +3,7 @@ abstract final class AppRoutes {
   static const repairs = '/repairs';
   static const addService = '/repairs/add';
   static const papers = '/papers';
+  static const addDocument = '/papers/add';
   static const reminders = '/reminders';
   static const reports = '/reports';
   static const garage = '/garage';
@@ -15,4 +16,9 @@ abstract final class AppRoutes {
       '$addService?category=$category';
 
   static String editServicePath(String id) => '$addService?id=$id';
+
+  static String addDocumentPath(String category) =>
+      '$addDocument?category=$category';
+
+  static String editDocumentPath(String id) => '$addDocument?id=$id';
 }

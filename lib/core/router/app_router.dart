@@ -5,6 +5,9 @@ import 'package:deskcar/features/garage/presentation/cubit/garage_cubit.dart';
 import 'package:deskcar/features/garage/presentation/pages/add_vehicle_page.dart';
 import 'package:deskcar/features/garage/presentation/pages/car_detail_page.dart';
 import 'package:deskcar/features/garage/presentation/pages/garage_page.dart';
+import 'package:deskcar/features/papers/domain/entities/paper_document_category.dart';
+import 'package:deskcar/features/papers/presentation/cubit/papers_cubit.dart';
+import 'package:deskcar/features/papers/presentation/pages/add_document_page.dart';
 import 'package:deskcar/features/papers/presentation/pages/papers_page.dart';
 import 'package:deskcar/features/reminders/presentation/pages/reminders_page.dart';
 import 'package:deskcar/features/repairs/domain/entities/repair_category.dart';
@@ -45,8 +48,11 @@ class AppRouter {
           ),
           GoRoute(
             path: AppRoutes.papers,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: PapersPage(),
+            pageBuilder: (context, state) => NoTransitionPage(
+              child: BlocProvider(
+                create: (_) => getIt<PapersCubit>()..load(),
+                child: const PapersPage(),
+              ),
             ),
           ),
           GoRoute(
@@ -75,6 +81,21 @@ class AppRouter {
           final category = RepairCategory.fromName(categoryName);
 
           return AddServicePage(
+            category: category,
+            recordId: recordId,
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.addDocument,
+        builder: (context, state) {
+          final recordId = state.uri.queryParameters['id'];
+          final categoryName =
+              state.uri.queryParameters['category'] ??
+                  PaperDocumentCategory.other.name;
+          final category = PaperDocumentCategory.fromName(categoryName);
+
+          return AddDocumentPage(
             category: category,
             recordId: recordId,
           );

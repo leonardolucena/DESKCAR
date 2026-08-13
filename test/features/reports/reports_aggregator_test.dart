@@ -21,7 +21,7 @@ void main() {
       id: id,
       vehicleId: 'vehicle-1',
       title: 'Serviço',
-      category: RepairCategory.other,
+      categoryKey: RepairCategory.other.name,
       serviceDate: serviceDate,
       mileage: mileage,
       totalAmount: totalAmount,

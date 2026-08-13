@@ -60,7 +60,7 @@ void main() {
       id: 'service-1',
       vehicleId: 'vehicle-1',
       title: 'Suspensão',
-      category: RepairCategory.suspension,
+      categoryKey: RepairCategory.suspension.name,
       serviceDate: now,
       mileage: 54200,
       totalAmount: 890,
