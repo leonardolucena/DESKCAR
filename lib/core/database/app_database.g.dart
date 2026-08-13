@@ -89,6 +89,38 @@ class $VehiclesTableTable extends VehiclesTable
     type: DriftSqlType.double,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _purchaseDateMeta = const VerificationMeta(
+    'purchaseDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> purchaseDate = GeneratedColumn<DateTime>(
+    'purchase_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _vehicleTypeMeta = const VerificationMeta(
+    'vehicleType',
+  );
+  @override
+  late final GeneratedColumn<String> vehicleType = GeneratedColumn<String>(
+    'vehicle_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('car'),
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -121,6 +153,9 @@ class $VehiclesTableTable extends VehiclesTable
     coverPhotoPath,
     distanceUnit,
     currentOdometer,
+    purchaseDate,
+    vehicleType,
+    notes,
     createdAt,
     updatedAt,
   ];
@@ -201,6 +236,30 @@ class $VehiclesTableTable extends VehiclesTable
         ),
       );
     }
+    if (data.containsKey('purchase_date')) {
+      context.handle(
+        _purchaseDateMeta,
+        purchaseDate.isAcceptableOrUnknown(
+          data['purchase_date']!,
+          _purchaseDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('vehicle_type')) {
+      context.handle(
+        _vehicleTypeMeta,
+        vehicleType.isAcceptableOrUnknown(
+          data['vehicle_type']!,
+          _vehicleTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -258,6 +317,18 @@ class $VehiclesTableTable extends VehiclesTable
         DriftSqlType.double,
         data['${effectivePrefix}current_odometer'],
       ),
+      purchaseDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}purchase_date'],
+      ),
+      vehicleType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}vehicle_type'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -285,6 +356,9 @@ class VehiclesTableData extends DataClass
   final String? coverPhotoPath;
   final String distanceUnit;
   final double? currentOdometer;
+  final DateTime? purchaseDate;
+  final String vehicleType;
+  final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
   const VehiclesTableData({
@@ -296,6 +370,9 @@ class VehiclesTableData extends DataClass
     this.coverPhotoPath,
     required this.distanceUnit,
     this.currentOdometer,
+    this.purchaseDate,
+    required this.vehicleType,
+    this.notes,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -318,6 +395,13 @@ class VehiclesTableData extends DataClass
     if (!nullToAbsent || currentOdometer != null) {
       map['current_odometer'] = Variable<double>(currentOdometer);
     }
+    if (!nullToAbsent || purchaseDate != null) {
+      map['purchase_date'] = Variable<DateTime>(purchaseDate);
+    }
+    map['vehicle_type'] = Variable<String>(vehicleType);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -339,6 +423,13 @@ class VehiclesTableData extends DataClass
       currentOdometer: currentOdometer == null && nullToAbsent
           ? const Value.absent()
           : Value(currentOdometer),
+      purchaseDate: purchaseDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(purchaseDate),
+      vehicleType: Value(vehicleType),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -358,6 +449,9 @@ class VehiclesTableData extends DataClass
       coverPhotoPath: serializer.fromJson<String?>(json['coverPhotoPath']),
       distanceUnit: serializer.fromJson<String>(json['distanceUnit']),
       currentOdometer: serializer.fromJson<double?>(json['currentOdometer']),
+      purchaseDate: serializer.fromJson<DateTime?>(json['purchaseDate']),
+      vehicleType: serializer.fromJson<String>(json['vehicleType']),
+      notes: serializer.fromJson<String?>(json['notes']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -374,6 +468,9 @@ class VehiclesTableData extends DataClass
       'coverPhotoPath': serializer.toJson<String?>(coverPhotoPath),
       'distanceUnit': serializer.toJson<String>(distanceUnit),
       'currentOdometer': serializer.toJson<double?>(currentOdometer),
+      'purchaseDate': serializer.toJson<DateTime?>(purchaseDate),
+      'vehicleType': serializer.toJson<String>(vehicleType),
+      'notes': serializer.toJson<String?>(notes),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -388,6 +485,9 @@ class VehiclesTableData extends DataClass
     Value<String?> coverPhotoPath = const Value.absent(),
     String? distanceUnit,
     Value<double?> currentOdometer = const Value.absent(),
+    Value<DateTime?> purchaseDate = const Value.absent(),
+    String? vehicleType,
+    Value<String?> notes = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => VehiclesTableData(
@@ -403,6 +503,9 @@ class VehiclesTableData extends DataClass
     currentOdometer: currentOdometer.present
         ? currentOdometer.value
         : this.currentOdometer,
+    purchaseDate: purchaseDate.present ? purchaseDate.value : this.purchaseDate,
+    vehicleType: vehicleType ?? this.vehicleType,
+    notes: notes.present ? notes.value : this.notes,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -424,6 +527,13 @@ class VehiclesTableData extends DataClass
       currentOdometer: data.currentOdometer.present
           ? data.currentOdometer.value
           : this.currentOdometer,
+      purchaseDate: data.purchaseDate.present
+          ? data.purchaseDate.value
+          : this.purchaseDate,
+      vehicleType: data.vehicleType.present
+          ? data.vehicleType.value
+          : this.vehicleType,
+      notes: data.notes.present ? data.notes.value : this.notes,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -440,6 +550,9 @@ class VehiclesTableData extends DataClass
           ..write('coverPhotoPath: $coverPhotoPath, ')
           ..write('distanceUnit: $distanceUnit, ')
           ..write('currentOdometer: $currentOdometer, ')
+          ..write('purchaseDate: $purchaseDate, ')
+          ..write('vehicleType: $vehicleType, ')
+          ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -456,6 +569,9 @@ class VehiclesTableData extends DataClass
     coverPhotoPath,
     distanceUnit,
     currentOdometer,
+    purchaseDate,
+    vehicleType,
+    notes,
     createdAt,
     updatedAt,
   );
@@ -471,6 +587,9 @@ class VehiclesTableData extends DataClass
           other.coverPhotoPath == this.coverPhotoPath &&
           other.distanceUnit == this.distanceUnit &&
           other.currentOdometer == this.currentOdometer &&
+          other.purchaseDate == this.purchaseDate &&
+          other.vehicleType == this.vehicleType &&
+          other.notes == this.notes &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -484,6 +603,9 @@ class VehiclesTableCompanion extends UpdateCompanion<VehiclesTableData> {
   final Value<String?> coverPhotoPath;
   final Value<String> distanceUnit;
   final Value<double?> currentOdometer;
+  final Value<DateTime?> purchaseDate;
+  final Value<String> vehicleType;
+  final Value<String?> notes;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -496,6 +618,9 @@ class VehiclesTableCompanion extends UpdateCompanion<VehiclesTableData> {
     this.coverPhotoPath = const Value.absent(),
     this.distanceUnit = const Value.absent(),
     this.currentOdometer = const Value.absent(),
+    this.purchaseDate = const Value.absent(),
+    this.vehicleType = const Value.absent(),
+    this.notes = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -509,6 +634,9 @@ class VehiclesTableCompanion extends UpdateCompanion<VehiclesTableData> {
     this.coverPhotoPath = const Value.absent(),
     required String distanceUnit,
     this.currentOdometer = const Value.absent(),
+    this.purchaseDate = const Value.absent(),
+    this.vehicleType = const Value.absent(),
+    this.notes = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -527,6 +655,9 @@ class VehiclesTableCompanion extends UpdateCompanion<VehiclesTableData> {
     Expression<String>? coverPhotoPath,
     Expression<String>? distanceUnit,
     Expression<double>? currentOdometer,
+    Expression<DateTime>? purchaseDate,
+    Expression<String>? vehicleType,
+    Expression<String>? notes,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -540,6 +671,9 @@ class VehiclesTableCompanion extends UpdateCompanion<VehiclesTableData> {
       if (coverPhotoPath != null) 'cover_photo_path': coverPhotoPath,
       if (distanceUnit != null) 'distance_unit': distanceUnit,
       if (currentOdometer != null) 'current_odometer': currentOdometer,
+      if (purchaseDate != null) 'purchase_date': purchaseDate,
+      if (vehicleType != null) 'vehicle_type': vehicleType,
+      if (notes != null) 'notes': notes,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -555,6 +689,9 @@ class VehiclesTableCompanion extends UpdateCompanion<VehiclesTableData> {
     Value<String?>? coverPhotoPath,
     Value<String>? distanceUnit,
     Value<double?>? currentOdometer,
+    Value<DateTime?>? purchaseDate,
+    Value<String>? vehicleType,
+    Value<String?>? notes,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
@@ -568,6 +705,9 @@ class VehiclesTableCompanion extends UpdateCompanion<VehiclesTableData> {
       coverPhotoPath: coverPhotoPath ?? this.coverPhotoPath,
       distanceUnit: distanceUnit ?? this.distanceUnit,
       currentOdometer: currentOdometer ?? this.currentOdometer,
+      purchaseDate: purchaseDate ?? this.purchaseDate,
+      vehicleType: vehicleType ?? this.vehicleType,
+      notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -601,6 +741,15 @@ class VehiclesTableCompanion extends UpdateCompanion<VehiclesTableData> {
     if (currentOdometer.present) {
       map['current_odometer'] = Variable<double>(currentOdometer.value);
     }
+    if (purchaseDate.present) {
+      map['purchase_date'] = Variable<DateTime>(purchaseDate.value);
+    }
+    if (vehicleType.present) {
+      map['vehicle_type'] = Variable<String>(vehicleType.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -624,6 +773,9 @@ class VehiclesTableCompanion extends UpdateCompanion<VehiclesTableData> {
           ..write('coverPhotoPath: $coverPhotoPath, ')
           ..write('distanceUnit: $distanceUnit, ')
           ..write('currentOdometer: $currentOdometer, ')
+          ..write('purchaseDate: $purchaseDate, ')
+          ..write('vehicleType: $vehicleType, ')
+          ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -767,6 +919,56 @@ class $ServiceRecordsTableTable extends ServiceRecordsTable
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('other'),
+  );
+  static const VerificationMeta _distanceUnitMeta = const VerificationMeta(
+    'distanceUnit',
+  );
+  @override
+  late final GeneratedColumn<String> distanceUnit = GeneratedColumn<String>(
+    'distance_unit',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('km'),
+  );
+  static const VerificationMeta _includeAccessoryCostsMeta =
+      const VerificationMeta('includeAccessoryCosts');
+  @override
+  late final GeneratedColumn<bool> includeAccessoryCosts =
+      GeneratedColumn<bool>(
+        'include_accessory_costs',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("include_accessory_costs" IN (0, 1))',
+        ),
+        defaultValue: const Constant(false),
+      );
+  static const VerificationMeta _supplierCodesMeta = const VerificationMeta(
+    'supplierCodes',
+  );
+  @override
+  late final GeneratedColumn<String> supplierCodes = GeneratedColumn<String>(
+    'supplier_codes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -803,6 +1005,10 @@ class $ServiceRecordsTableTable extends ServiceRecordsTable
     totalAmount,
     partsAmount,
     laborAmount,
+    category,
+    distanceUnit,
+    includeAccessoryCosts,
+    supplierCodes,
     createdAt,
     updatedAt,
   ];
@@ -914,6 +1120,39 @@ class $ServiceRecordsTableTable extends ServiceRecordsTable
         ),
       );
     }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    }
+    if (data.containsKey('distance_unit')) {
+      context.handle(
+        _distanceUnitMeta,
+        distanceUnit.isAcceptableOrUnknown(
+          data['distance_unit']!,
+          _distanceUnitMeta,
+        ),
+      );
+    }
+    if (data.containsKey('include_accessory_costs')) {
+      context.handle(
+        _includeAccessoryCostsMeta,
+        includeAccessoryCosts.isAcceptableOrUnknown(
+          data['include_accessory_costs']!,
+          _includeAccessoryCostsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('supplier_codes')) {
+      context.handle(
+        _supplierCodesMeta,
+        supplierCodes.isAcceptableOrUnknown(
+          data['supplier_codes']!,
+          _supplierCodesMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -990,6 +1229,22 @@ class $ServiceRecordsTableTable extends ServiceRecordsTable
         DriftSqlType.double,
         data['${effectivePrefix}labor_amount'],
       )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      distanceUnit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}distance_unit'],
+      )!,
+      includeAccessoryCosts: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}include_accessory_costs'],
+      )!,
+      supplierCodes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}supplier_codes'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -1021,6 +1276,10 @@ class ServiceRecordsTableData extends DataClass
   final double totalAmount;
   final double partsAmount;
   final double laborAmount;
+  final String category;
+  final String distanceUnit;
+  final bool includeAccessoryCosts;
+  final String? supplierCodes;
   final DateTime createdAt;
   final DateTime updatedAt;
   const ServiceRecordsTableData({
@@ -1036,6 +1295,10 @@ class ServiceRecordsTableData extends DataClass
     required this.totalAmount,
     required this.partsAmount,
     required this.laborAmount,
+    required this.category,
+    required this.distanceUnit,
+    required this.includeAccessoryCosts,
+    this.supplierCodes,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -1062,6 +1325,12 @@ class ServiceRecordsTableData extends DataClass
     map['total_amount'] = Variable<double>(totalAmount);
     map['parts_amount'] = Variable<double>(partsAmount);
     map['labor_amount'] = Variable<double>(laborAmount);
+    map['category'] = Variable<String>(category);
+    map['distance_unit'] = Variable<String>(distanceUnit);
+    map['include_accessory_costs'] = Variable<bool>(includeAccessoryCosts);
+    if (!nullToAbsent || supplierCodes != null) {
+      map['supplier_codes'] = Variable<String>(supplierCodes);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -1089,6 +1358,12 @@ class ServiceRecordsTableData extends DataClass
       totalAmount: Value(totalAmount),
       partsAmount: Value(partsAmount),
       laborAmount: Value(laborAmount),
+      category: Value(category),
+      distanceUnit: Value(distanceUnit),
+      includeAccessoryCosts: Value(includeAccessoryCosts),
+      supplierCodes: supplierCodes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supplierCodes),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -1112,6 +1387,12 @@ class ServiceRecordsTableData extends DataClass
       totalAmount: serializer.fromJson<double>(json['totalAmount']),
       partsAmount: serializer.fromJson<double>(json['partsAmount']),
       laborAmount: serializer.fromJson<double>(json['laborAmount']),
+      category: serializer.fromJson<String>(json['category']),
+      distanceUnit: serializer.fromJson<String>(json['distanceUnit']),
+      includeAccessoryCosts: serializer.fromJson<bool>(
+        json['includeAccessoryCosts'],
+      ),
+      supplierCodes: serializer.fromJson<String?>(json['supplierCodes']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -1132,6 +1413,10 @@ class ServiceRecordsTableData extends DataClass
       'totalAmount': serializer.toJson<double>(totalAmount),
       'partsAmount': serializer.toJson<double>(partsAmount),
       'laborAmount': serializer.toJson<double>(laborAmount),
+      'category': serializer.toJson<String>(category),
+      'distanceUnit': serializer.toJson<String>(distanceUnit),
+      'includeAccessoryCosts': serializer.toJson<bool>(includeAccessoryCosts),
+      'supplierCodes': serializer.toJson<String?>(supplierCodes),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -1150,6 +1435,10 @@ class ServiceRecordsTableData extends DataClass
     double? totalAmount,
     double? partsAmount,
     double? laborAmount,
+    String? category,
+    String? distanceUnit,
+    bool? includeAccessoryCosts,
+    Value<String?> supplierCodes = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => ServiceRecordsTableData(
@@ -1165,6 +1454,12 @@ class ServiceRecordsTableData extends DataClass
     totalAmount: totalAmount ?? this.totalAmount,
     partsAmount: partsAmount ?? this.partsAmount,
     laborAmount: laborAmount ?? this.laborAmount,
+    category: category ?? this.category,
+    distanceUnit: distanceUnit ?? this.distanceUnit,
+    includeAccessoryCosts: includeAccessoryCosts ?? this.includeAccessoryCosts,
+    supplierCodes: supplierCodes.present
+        ? supplierCodes.value
+        : this.supplierCodes,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -1192,6 +1487,16 @@ class ServiceRecordsTableData extends DataClass
       laborAmount: data.laborAmount.present
           ? data.laborAmount.value
           : this.laborAmount,
+      category: data.category.present ? data.category.value : this.category,
+      distanceUnit: data.distanceUnit.present
+          ? data.distanceUnit.value
+          : this.distanceUnit,
+      includeAccessoryCosts: data.includeAccessoryCosts.present
+          ? data.includeAccessoryCosts.value
+          : this.includeAccessoryCosts,
+      supplierCodes: data.supplierCodes.present
+          ? data.supplierCodes.value
+          : this.supplierCodes,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -1212,6 +1517,10 @@ class ServiceRecordsTableData extends DataClass
           ..write('totalAmount: $totalAmount, ')
           ..write('partsAmount: $partsAmount, ')
           ..write('laborAmount: $laborAmount, ')
+          ..write('category: $category, ')
+          ..write('distanceUnit: $distanceUnit, ')
+          ..write('includeAccessoryCosts: $includeAccessoryCosts, ')
+          ..write('supplierCodes: $supplierCodes, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1232,6 +1541,10 @@ class ServiceRecordsTableData extends DataClass
     totalAmount,
     partsAmount,
     laborAmount,
+    category,
+    distanceUnit,
+    includeAccessoryCosts,
+    supplierCodes,
     createdAt,
     updatedAt,
   );
@@ -1251,6 +1564,10 @@ class ServiceRecordsTableData extends DataClass
           other.totalAmount == this.totalAmount &&
           other.partsAmount == this.partsAmount &&
           other.laborAmount == this.laborAmount &&
+          other.category == this.category &&
+          other.distanceUnit == this.distanceUnit &&
+          other.includeAccessoryCosts == this.includeAccessoryCosts &&
+          other.supplierCodes == this.supplierCodes &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -1269,6 +1586,10 @@ class ServiceRecordsTableCompanion
   final Value<double> totalAmount;
   final Value<double> partsAmount;
   final Value<double> laborAmount;
+  final Value<String> category;
+  final Value<String> distanceUnit;
+  final Value<bool> includeAccessoryCosts;
+  final Value<String?> supplierCodes;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -1285,6 +1606,10 @@ class ServiceRecordsTableCompanion
     this.totalAmount = const Value.absent(),
     this.partsAmount = const Value.absent(),
     this.laborAmount = const Value.absent(),
+    this.category = const Value.absent(),
+    this.distanceUnit = const Value.absent(),
+    this.includeAccessoryCosts = const Value.absent(),
+    this.supplierCodes = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1302,6 +1627,10 @@ class ServiceRecordsTableCompanion
     required double totalAmount,
     this.partsAmount = const Value.absent(),
     this.laborAmount = const Value.absent(),
+    this.category = const Value.absent(),
+    this.distanceUnit = const Value.absent(),
+    this.includeAccessoryCosts = const Value.absent(),
+    this.supplierCodes = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -1326,6 +1655,10 @@ class ServiceRecordsTableCompanion
     Expression<double>? totalAmount,
     Expression<double>? partsAmount,
     Expression<double>? laborAmount,
+    Expression<String>? category,
+    Expression<String>? distanceUnit,
+    Expression<bool>? includeAccessoryCosts,
+    Expression<String>? supplierCodes,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -1343,6 +1676,11 @@ class ServiceRecordsTableCompanion
       if (totalAmount != null) 'total_amount': totalAmount,
       if (partsAmount != null) 'parts_amount': partsAmount,
       if (laborAmount != null) 'labor_amount': laborAmount,
+      if (category != null) 'category': category,
+      if (distanceUnit != null) 'distance_unit': distanceUnit,
+      if (includeAccessoryCosts != null)
+        'include_accessory_costs': includeAccessoryCosts,
+      if (supplierCodes != null) 'supplier_codes': supplierCodes,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -1362,6 +1700,10 @@ class ServiceRecordsTableCompanion
     Value<double>? totalAmount,
     Value<double>? partsAmount,
     Value<double>? laborAmount,
+    Value<String>? category,
+    Value<String>? distanceUnit,
+    Value<bool>? includeAccessoryCosts,
+    Value<String?>? supplierCodes,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
@@ -1379,6 +1721,11 @@ class ServiceRecordsTableCompanion
       totalAmount: totalAmount ?? this.totalAmount,
       partsAmount: partsAmount ?? this.partsAmount,
       laborAmount: laborAmount ?? this.laborAmount,
+      category: category ?? this.category,
+      distanceUnit: distanceUnit ?? this.distanceUnit,
+      includeAccessoryCosts:
+          includeAccessoryCosts ?? this.includeAccessoryCosts,
+      supplierCodes: supplierCodes ?? this.supplierCodes,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -1424,6 +1771,20 @@ class ServiceRecordsTableCompanion
     if (laborAmount.present) {
       map['labor_amount'] = Variable<double>(laborAmount.value);
     }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (distanceUnit.present) {
+      map['distance_unit'] = Variable<String>(distanceUnit.value);
+    }
+    if (includeAccessoryCosts.present) {
+      map['include_accessory_costs'] = Variable<bool>(
+        includeAccessoryCosts.value,
+      );
+    }
+    if (supplierCodes.present) {
+      map['supplier_codes'] = Variable<String>(supplierCodes.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1451,6 +1812,10 @@ class ServiceRecordsTableCompanion
           ..write('totalAmount: $totalAmount, ')
           ..write('partsAmount: $partsAmount, ')
           ..write('laborAmount: $laborAmount, ')
+          ..write('category: $category, ')
+          ..write('distanceUnit: $distanceUnit, ')
+          ..write('includeAccessoryCosts: $includeAccessoryCosts, ')
+          ..write('supplierCodes: $supplierCodes, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -3082,6 +3447,9 @@ typedef $$VehiclesTableTableCreateCompanionBuilder =
       Value<String?> coverPhotoPath,
       required String distanceUnit,
       Value<double?> currentOdometer,
+      Value<DateTime?> purchaseDate,
+      Value<String> vehicleType,
+      Value<String?> notes,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<int> rowid,
@@ -3096,6 +3464,9 @@ typedef $$VehiclesTableTableUpdateCompanionBuilder =
       Value<String?> coverPhotoPath,
       Value<String> distanceUnit,
       Value<double?> currentOdometer,
+      Value<DateTime?> purchaseDate,
+      Value<String> vehicleType,
+      Value<String?> notes,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -3224,6 +3595,21 @@ class $$VehiclesTableTableFilterComposer
 
   ColumnFilters<double> get currentOdometer => $composableBuilder(
     column: $table.currentOdometer,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get purchaseDate => $composableBuilder(
+    column: $table.purchaseDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get vehicleType => $composableBuilder(
+    column: $table.vehicleType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3363,6 +3749,21 @@ class $$VehiclesTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get purchaseDate => $composableBuilder(
+    column: $table.purchaseDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get vehicleType => $composableBuilder(
+    column: $table.vehicleType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -3414,6 +3815,19 @@ class $$VehiclesTableTableAnnotationComposer
     column: $table.currentOdometer,
     builder: (column) => column,
   );
+
+  GeneratedColumn<DateTime> get purchaseDate => $composableBuilder(
+    column: $table.purchaseDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get vehicleType => $composableBuilder(
+    column: $table.vehicleType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -3539,6 +3953,9 @@ class $$VehiclesTableTableTableManager
                 Value<String?> coverPhotoPath = const Value.absent(),
                 Value<String> distanceUnit = const Value.absent(),
                 Value<double?> currentOdometer = const Value.absent(),
+                Value<DateTime?> purchaseDate = const Value.absent(),
+                Value<String> vehicleType = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -3551,6 +3968,9 @@ class $$VehiclesTableTableTableManager
                 coverPhotoPath: coverPhotoPath,
                 distanceUnit: distanceUnit,
                 currentOdometer: currentOdometer,
+                purchaseDate: purchaseDate,
+                vehicleType: vehicleType,
+                notes: notes,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -3565,6 +3985,9 @@ class $$VehiclesTableTableTableManager
                 Value<String?> coverPhotoPath = const Value.absent(),
                 required String distanceUnit,
                 Value<double?> currentOdometer = const Value.absent(),
+                Value<DateTime?> purchaseDate = const Value.absent(),
+                Value<String> vehicleType = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
@@ -3577,6 +4000,9 @@ class $$VehiclesTableTableTableManager
                 coverPhotoPath: coverPhotoPath,
                 distanceUnit: distanceUnit,
                 currentOdometer: currentOdometer,
+                purchaseDate: purchaseDate,
+                vehicleType: vehicleType,
+                notes: notes,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -3708,6 +4134,10 @@ typedef $$ServiceRecordsTableTableCreateCompanionBuilder =
       required double totalAmount,
       Value<double> partsAmount,
       Value<double> laborAmount,
+      Value<String> category,
+      Value<String> distanceUnit,
+      Value<bool> includeAccessoryCosts,
+      Value<String?> supplierCodes,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<int> rowid,
@@ -3726,6 +4156,10 @@ typedef $$ServiceRecordsTableTableUpdateCompanionBuilder =
       Value<double> totalAmount,
       Value<double> partsAmount,
       Value<double> laborAmount,
+      Value<String> category,
+      Value<String> distanceUnit,
+      Value<bool> includeAccessoryCosts,
+      Value<String?> supplierCodes,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -3857,6 +4291,26 @@ class $$ServiceRecordsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get distanceUnit => $composableBuilder(
+    column: $table.distanceUnit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get includeAccessoryCosts => $composableBuilder(
+    column: $table.includeAccessoryCosts,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get supplierCodes => $composableBuilder(
+    column: $table.supplierCodes,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
@@ -3981,6 +4435,26 @@ class $$ServiceRecordsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get distanceUnit => $composableBuilder(
+    column: $table.distanceUnit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get includeAccessoryCosts => $composableBuilder(
+    column: $table.includeAccessoryCosts,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get supplierCodes => $composableBuilder(
+    column: $table.supplierCodes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -4064,6 +4538,24 @@ class $$ServiceRecordsTableTableAnnotationComposer
 
   GeneratedColumn<double> get laborAmount => $composableBuilder(
     column: $table.laborAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get distanceUnit => $composableBuilder(
+    column: $table.distanceUnit,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get includeAccessoryCosts => $composableBuilder(
+    column: $table.includeAccessoryCosts,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get supplierCodes => $composableBuilder(
+    column: $table.supplierCodes,
     builder: (column) => column,
   );
 
@@ -4175,6 +4667,10 @@ class $$ServiceRecordsTableTableTableManager
                 Value<double> totalAmount = const Value.absent(),
                 Value<double> partsAmount = const Value.absent(),
                 Value<double> laborAmount = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<String> distanceUnit = const Value.absent(),
+                Value<bool> includeAccessoryCosts = const Value.absent(),
+                Value<String?> supplierCodes = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -4191,6 +4687,10 @@ class $$ServiceRecordsTableTableTableManager
                 totalAmount: totalAmount,
                 partsAmount: partsAmount,
                 laborAmount: laborAmount,
+                category: category,
+                distanceUnit: distanceUnit,
+                includeAccessoryCosts: includeAccessoryCosts,
+                supplierCodes: supplierCodes,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -4209,6 +4709,10 @@ class $$ServiceRecordsTableTableTableManager
                 required double totalAmount,
                 Value<double> partsAmount = const Value.absent(),
                 Value<double> laborAmount = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<String> distanceUnit = const Value.absent(),
+                Value<bool> includeAccessoryCosts = const Value.absent(),
+                Value<String?> supplierCodes = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
@@ -4225,6 +4729,10 @@ class $$ServiceRecordsTableTableTableManager
                 totalAmount: totalAmount,
                 partsAmount: partsAmount,
                 laborAmount: laborAmount,
+                category: category,
+                distanceUnit: distanceUnit,
+                includeAccessoryCosts: includeAccessoryCosts,
+                supplierCodes: supplierCodes,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,

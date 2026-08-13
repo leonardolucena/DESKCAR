@@ -15,8 +15,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class RepairsPage extends StatelessWidget {
+class RepairsPage extends StatefulWidget {
   const RepairsPage({super.key});
+
+  @override
+  State<RepairsPage> createState() => _RepairsPageState();
+}
+
+class _RepairsPageState extends State<RepairsPage> {
+  final _searchController = TextEditingController();
+  final _searchFocusNode = FocusNode();
+  bool _isSearching = false;
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
 
   Future<void> _openNewRepairFlow(BuildContext context) async {
     final selectedCategory = await showSelectServiceBottomSheet(context);
@@ -27,19 +44,50 @@ class RepairsPage extends StatelessWidget {
     context.push(AppRoutes.addServicePath(selectedCategory.name));
   }
 
+  void _startSearch() {
+    setState(() => _isSearching = true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _searchFocusNode.requestFocus();
+    });
+  }
+
+  void _closeSearch() {
+    setState(() {
+      _isSearching = false;
+      _searchQuery = '';
+      _searchController.clear();
+    });
+  }
+
+  List<ServiceRecordEntity> _filterRecords(List<ServiceRecordEntity> records) {
+    final query = _searchQuery.trim().toLowerCase();
+    if (query.isEmpty) {
+      return records;
+    }
+
+    return records
+        .where((record) => record.title.toLowerCase().contains(query))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundCardLight,
-      appBar: RepairsAppBar(
-        onSearchPressed: () {
-          AppSnackbar.info(context, 'Busca em breve.');
-        },
-        onAddPressed: () => _openNewRepairFlow(context),
-      ),
-      body: BlocBuilder<RepairsCubit, RepairsState>(
-        builder: (context, state) {
-          return switch (state.status) {
+    return BlocBuilder<RepairsCubit, RepairsState>(
+      builder: (context, state) {
+        final hasRecords =
+            state.status == RepairsStatus.loaded && state.records.isNotEmpty;
+
+        return Scaffold(
+          backgroundColor: AppColors.backgroundCardLight,
+          appBar: RepairsAppBar(
+            isSearching: _isSearching,
+            searchController: _searchController,
+            searchFocusNode: _searchFocusNode,
+            onSearchPressed: _startSearch,
+            onSearchClose: _closeSearch,
+            onSearchChanged: (value) => setState(() => _searchQuery = value),
+          ),
+          body: switch (state.status) {
             RepairsStatus.initial || RepairsStatus.loading =>
               const AppLoadingState(itemCount: 4),
             RepairsStatus.error => AppErrorState(
@@ -47,45 +95,72 @@ class RepairsPage extends StatelessWidget {
                 onRetry: () => context.read<RepairsCubit>().load(),
               ),
             RepairsStatus.loaded => _RepairsList(
-                records: state.records,
+                allRecords: state.records,
+                filteredRecords: _filterRecords(state.records),
+                isSearching: _isSearching,
+                searchQuery: _searchQuery,
                 onAddPressed: () => _openNewRepairFlow(context),
               ),
-          };
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.repairsFabBackground,
-        foregroundColor: AppColors.backgroundCardLight,
-        onPressed: () => _openNewRepairFlow(context),
-        child: const Icon(Icons.add),
-      ),
+          },
+          floatingActionButton: hasRecords
+              ? FloatingActionButton(
+                  backgroundColor: AppColors.repairsFabBackground,
+                  foregroundColor: AppColors.backgroundCardLight,
+                  onPressed: () => _openNewRepairFlow(context),
+                  child: const Icon(Icons.add),
+                )
+              : null,
+        );
+      },
     );
   }
 }
 
 class _RepairsList extends StatelessWidget {
   const _RepairsList({
-    required this.records,
+    required this.allRecords,
+    required this.filteredRecords,
+    required this.isSearching,
+    required this.searchQuery,
     required this.onAddPressed,
   });
 
-  final List<ServiceRecordEntity> records;
+  final List<ServiceRecordEntity> allRecords;
+  final List<ServiceRecordEntity> filteredRecords;
+  final bool isSearching;
+  final String searchQuery;
   final VoidCallback onAddPressed;
 
   @override
   Widget build(BuildContext context) {
-    if (records.isEmpty) {
+    if (allRecords.isEmpty) {
       return AppEmptyState(
         title: 'Nenhum reparo registrado',
-        message: 'Toque no + para adicionar a primeira nota de serviço.',
+        message:
+            'Adicione a primeira nota de serviço para começar a registrar despesas.',
         icon: Icons.build_outlined,
         actionLabel: 'Novo reparo',
         onAction: onAddPressed,
       );
     }
 
+    if (filteredRecords.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.all(AppSizes.cardPadding),
+          child: Text(
+            'Nenhuma nota encontrada para "$searchQuery".',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.repairsCostMuted,
+                ),
+          ),
+        ),
+      );
+    }
+
     return ListView.separated(
-      itemCount: records.length,
+      itemCount: filteredRecords.length,
       separatorBuilder: (context, index) => Divider(
         height: 1,
         thickness: 1,
@@ -94,7 +169,7 @@ class _RepairsList extends StatelessWidget {
         endIndent: AppSizes.cardPadding,
       ),
       itemBuilder: (context, index) {
-        final record = records[index];
+        final record = filteredRecords[index];
         return ServiceRecordListTile(
           record: record,
           onTap: () {

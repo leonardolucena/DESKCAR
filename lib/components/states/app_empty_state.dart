@@ -28,40 +28,43 @@ class AppEmptyState extends StatelessWidget {
       constraints: BoxConstraints(
         minHeight: minHeight ?? AppSizes.stateMinHeight,
       ),
-      child: SizedBox(
-        width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: AppSizes.iconLg,
-              color: colorScheme.onSurface.withValues(alpha: 0.4),
-            ),
-            SizedBox(height: AppSizes.spacingMd),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            if (message != null) ...[
-              SizedBox(height: AppSizes.spacingSm),
-              Text(
-                message!,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: AppSizes.cardPadding),
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: AppSizes.iconLg,
+                color: colorScheme.onSurface.withValues(alpha: 0.4),
               ),
-            ],
-            if (actionLabel != null && onAction != null) ...[
               SizedBox(height: AppSizes.spacingMd),
-              AppElevatedButton(
-                label: actionLabel!,
-                onPressed: onAction,
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
+              if (message != null) ...[
+                SizedBox(height: AppSizes.spacingSm),
+                Text(
+                  message!,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
+                ),
+              ],
+              if (actionLabel != null && onAction != null) ...[
+                SizedBox(height: AppSizes.spacingMd),
+                AppElevatedButton(
+                  label: actionLabel!,
+                  onPressed: onAction,
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

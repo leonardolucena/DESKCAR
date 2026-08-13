@@ -8,10 +8,8 @@ abstract final class AppDateFormatter {
 
 abstract final class AppCurrencyFormatter {
   static String formatAmount(num value) {
-    final formatted = NumberFormat('#,##0', 'pt_BR')
-        .format(value)
-        .replaceAll('.', ' ');
-    return '$formatted R\$';
+    final formatted = NumberFormat('#,##0', 'pt_BR').format(value);
+    return 'R\$ $formatted';
   }
 
   static String formatMileage(num value, String unitLabel) {
@@ -19,5 +17,15 @@ abstract final class AppCurrencyFormatter {
         .format(value)
         .replaceAll('.', ' ');
     return '$formatted $unitLabel';
+  }
+
+  static double? parseAmount(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) {
+      return null;
+    }
+
+    final normalized = trimmed.replaceAll(' ', '').replaceAll('.', '').replaceAll(',', '.');
+    return double.tryParse(normalized);
   }
 }

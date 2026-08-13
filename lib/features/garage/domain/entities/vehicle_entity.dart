@@ -10,7 +10,10 @@ class VehicleEntity extends Equatable {
     this.licensePlate,
     this.coverPhotoPath,
     required this.distanceUnit,
+    required this.vehicleType,
     this.currentOdometer,
+    this.purchaseDate,
+    this.notes,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -22,14 +25,22 @@ class VehicleEntity extends Equatable {
   final String? licensePlate;
   final String? coverPhotoPath;
   final DistanceUnit distanceUnit;
+  final VehicleType vehicleType;
   final double? currentOdometer;
+  final DateTime? purchaseDate;
+  final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
 
   String get displayName {
-    final yearLabel = year != null ? '$year ' : '';
-    return '$yearLabel$brand $model'.trim();
+    final baseName = model.isEmpty ? brand : '$brand $model'.trim();
+    if (year != null && !baseName.contains('$year')) {
+      return '$baseName $year'.trim();
+    }
+    return baseName;
   }
+
+  DateTime get listDate => purchaseDate ?? createdAt;
 
   @override
   List<Object?> get props => [
@@ -40,7 +51,10 @@ class VehicleEntity extends Equatable {
         licensePlate,
         coverPhotoPath,
         distanceUnit,
+        vehicleType,
         currentOdometer,
+        purchaseDate,
+        notes,
         createdAt,
         updatedAt,
       ];

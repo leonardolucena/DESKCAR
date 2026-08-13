@@ -14,6 +14,12 @@ class ServiceRecordEntity extends Equatable {
     required this.partsAmount,
     required this.laborAmount,
     required this.distanceUnit,
+    this.notes,
+    this.supplierCodes,
+    this.includeAccessoryCosts = false,
+    required this.recordType,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   final String id;
@@ -26,6 +32,12 @@ class ServiceRecordEntity extends Equatable {
   final double partsAmount;
   final double laborAmount;
   final DistanceUnit distanceUnit;
+  final String? notes;
+  final String? supplierCodes;
+  final bool includeAccessoryCosts;
+  final ServiceRecordType recordType;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   @override
   List<Object?> get props => [
@@ -39,5 +51,11 @@ class ServiceRecordEntity extends Equatable {
         partsAmount,
         laborAmount,
         distanceUnit,
+        notes,
+        supplierCodes,
+        includeAccessoryCosts,
+        recordType,
+        createdAt,
+        updatedAt,
       ];
 }

@@ -1,14 +1,21 @@
 import 'package:deskcar/components/outline_button.dart';
+import 'package:deskcar/core/di/injection.dart';
+import 'package:deskcar/core/errors/failure_message_mapper.dart';
 import 'package:deskcar/core/feedback/app_snackbar.dart';
 import 'package:deskcar/core/responsive/app_sizes.dart';
 import 'package:deskcar/core/utils/formatters.dart';
+import 'package:deskcar/features/garage/domain/entities/garage_enums.dart';
+import 'package:deskcar/features/garage/domain/repositories/vehicle_repository.dart';
 import 'package:deskcar/features/repairs/domain/entities/repair_category.dart';
+import 'package:deskcar/features/repairs/domain/entities/service_record_entity.dart';
+import 'package:deskcar/features/repairs/domain/repositories/service_record_repository.dart';
 import 'package:deskcar/features/repairs/presentation/widgets/add_service_form_field.dart';
 import 'package:deskcar/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:uuid/uuid.dart';
 
 class AddServicePage extends StatefulWidget {
   const AddServicePage({
@@ -40,6 +47,7 @@ class _AddServicePageState extends State<AddServicePage> {
     text: AppDateFormatter.formatDayMonthYear(_serviceDate),
   );
   bool _includeAccessoryCosts = false;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -76,9 +84,87 @@ class _AddServicePageState extends State<AddServicePage> {
     }
   }
 
-  void _save() {
-    AppSnackbar.success(context, 'Serviço salvo (em breve no banco local).');
-    context.pop();
+  Future<void> _save() async {
+    final title = _nameController.text.trim();
+    if (title.isEmpty) {
+      AppSnackbar.error(context, 'Informe o nome do serviço.');
+      return;
+    }
+
+    setState(() => _isSaving = true);
+
+    final vehiclesResult = await getIt<VehicleRepository>().getAllVehicles();
+    if (!mounted) {
+      return;
+    }
+
+    final vehicle = vehiclesResult.getOrNull()?.firstOrNull;
+    if (vehicle == null) {
+      setState(() => _isSaving = false);
+      AppSnackbar.error(
+        context,
+        'Cadastre um veículo na garagem antes de adicionar uma nota.',
+      );
+      return;
+    }
+
+    final partsAmount = AppCurrencyFormatter.parseAmount(_partsController.text) ?? 0;
+    final laborAmount = AppCurrencyFormatter.parseAmount(_laborController.text) ?? 0;
+    final parsedTotal = AppCurrencyFormatter.parseAmount(_totalController.text);
+    final totalAmount = parsedTotal ?? (partsAmount + laborAmount);
+
+    if (totalAmount <= 0) {
+      setState(() => _isSaving = false);
+      AppSnackbar.error(context, 'Informe o valor total do serviço.');
+      return;
+    }
+
+    final mileageText = _mileageController.text.trim();
+    final mileage = mileageText.isEmpty
+        ? null
+        : double.tryParse(mileageText.replaceAll('.', ''));
+
+    final supplierCodes = _supplierCodesController.text.trim();
+    final notes = _commentController.text.trim();
+    final now = DateTime.now();
+
+    final record = ServiceRecordEntity(
+      id: const Uuid().v4(),
+      vehicleId: vehicle.id,
+      title: title,
+      category: widget.category,
+      serviceDate: _serviceDate,
+      mileage: mileage,
+      totalAmount: totalAmount,
+      partsAmount: partsAmount,
+      laborAmount: laborAmount,
+      distanceUnit: vehicle.distanceUnit,
+      notes: notes.isEmpty ? null : notes,
+      supplierCodes: supplierCodes.isEmpty ? null : supplierCodes,
+      includeAccessoryCosts: _includeAccessoryCosts,
+      recordType: ServiceRecordType.repair,
+      createdAt: now,
+      updatedAt: now,
+    );
+
+    final result = await getIt<ServiceRecordRepository>().createRecord(record);
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() => _isSaving = false);
+
+    result.fold(
+      (_) {
+        AppSnackbar.success(context, 'Serviço salvo.');
+        context.pop();
+      },
+      (failure) => AppSnackbar.error(
+        context,
+        FailureMessageMapper.message(failure),
+      ),
+    );
   }
 
   @override
@@ -95,7 +181,7 @@ class _AddServicePageState extends State<AddServicePage> {
         centerTitle: true,
         leading: IconButton(
           tooltip: 'Fechar',
-          onPressed: () => context.pop(),
+          onPressed: _isSaving ? null : () => context.pop(),
           icon: const Icon(Icons.close),
         ),
         title: Text(
@@ -107,8 +193,17 @@ class _AddServicePageState extends State<AddServicePage> {
         actions: [
           IconButton(
             tooltip: 'Salvar',
-            onPressed: _save,
-            icon: const Icon(Icons.check),
+            onPressed: _isSaving ? null : _save,
+            icon: _isSaving
+                ? SizedBox(
+                    width: AppSizes.iconMd,
+                    height: AppSizes.iconMd,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  )
+                : const Icon(Icons.check),
           ),
         ],
       ),

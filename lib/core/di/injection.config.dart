@@ -13,12 +13,20 @@ import 'package:deskcar/core/database/app_database.dart' as _i929;
 import 'package:deskcar/core/di/app_module.dart' as _i122;
 import 'package:deskcar/core/router/app_router.dart' as _i650;
 import 'package:deskcar/core/storage/app_paths.dart' as _i46;
+import 'package:deskcar/features/garage/data/repositories/reminder_repository_impl.dart'
+    as _i127;
 import 'package:deskcar/features/garage/data/repositories/vehicle_repository_impl.dart'
     as _i618;
+import 'package:deskcar/features/garage/domain/repositories/reminder_repository.dart'
+    as _i624;
 import 'package:deskcar/features/garage/domain/repositories/vehicle_repository.dart'
     as _i32;
 import 'package:deskcar/features/garage/presentation/cubit/garage_cubit.dart'
     as _i445;
+import 'package:deskcar/features/repairs/data/repositories/service_record_repository_impl.dart'
+    as _i1054;
+import 'package:deskcar/features/repairs/domain/repositories/service_record_repository.dart'
+    as _i704;
 import 'package:deskcar/features/repairs/presentation/cubit/repairs_cubit.dart'
     as _i749;
 import 'package:get_it/get_it.dart' as _i174;
@@ -32,7 +40,6 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
-    gh.factory<_i749.RepairsCubit>(() => _i749.RepairsCubit());
     await gh.lazySingletonAsync<_i46.AppPaths>(
       () => appModule.appPaths(),
       preResolve: true,
@@ -40,6 +47,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i650.AppRouter>(() => _i650.AppRouter());
     gh.lazySingleton<_i929.AppDatabase>(
       () => appModule.appDatabase(gh<_i46.AppPaths>()),
+    );
+    gh.lazySingleton<_i624.ReminderRepository>(
+      () => _i127.ReminderRepositoryImpl(gh<_i929.AppDatabase>()),
+    );
+    gh.lazySingleton<_i704.ServiceRecordRepository>(
+      () => _i1054.ServiceRecordRepositoryImpl(gh<_i929.AppDatabase>()),
+    );
+    gh.factory<_i749.RepairsCubit>(
+      () => _i749.RepairsCubit(gh<_i704.ServiceRecordRepository>()),
     );
     gh.lazySingleton<_i32.VehicleRepository>(
       () => _i618.VehicleRepositoryImpl(gh<_i929.AppDatabase>()),

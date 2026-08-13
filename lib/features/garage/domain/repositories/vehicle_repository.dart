@@ -5,4 +5,6 @@ abstract interface class VehicleRepository {
   Stream<List<VehicleEntity>> watchAllVehicles();
 
   AppAsyncResult<List<VehicleEntity>> getAllVehicles();
+
+  AppAsyncResult<VehicleEntity> createVehicle(VehicleEntity vehicle);
 }

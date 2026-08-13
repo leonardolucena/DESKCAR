@@ -15,6 +15,11 @@ class ServiceRecordsTable extends Table {
   RealColumn get totalAmount => real()();
   RealColumn get partsAmount => real().withDefault(const Constant(0))();
   RealColumn get laborAmount => real().withDefault(const Constant(0))();
+  TextColumn get category => text().withDefault(const Constant('other'))();
+  TextColumn get distanceUnit => text().withDefault(const Constant('km'))();
+  BoolColumn get includeAccessoryCosts =>
+      boolean().withDefault(const Constant(false))();
+  TextColumn get supplierCodes => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 

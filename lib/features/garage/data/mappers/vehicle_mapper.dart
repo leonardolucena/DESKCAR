@@ -13,7 +13,10 @@ extension VehicleRowMapper on VehiclesTableData {
       licensePlate: licensePlate,
       coverPhotoPath: coverPhotoPath,
       distanceUnit: DistanceUnit.fromStorage(distanceUnit),
+      vehicleType: VehicleType.fromStorage(vehicleType),
       currentOdometer: currentOdometer,
+      purchaseDate: purchaseDate,
+      notes: notes,
       createdAt: createdAt,
       updatedAt: updatedAt,
     );
@@ -30,9 +33,31 @@ extension VehicleEntityMapper on VehicleEntity {
       licensePlate: Value(licensePlate),
       coverPhotoPath: Value(coverPhotoPath),
       distanceUnit: distanceUnit.storageValue,
+      vehicleType: Value(vehicleType.storageValue),
       currentOdometer: Value(currentOdometer),
+      purchaseDate: Value(purchaseDate),
+      notes: Value(notes),
       createdAt: createdAt,
       updatedAt: updatedAt,
     );
+  }
+}
+
+class VehicleNameParser {
+  const VehicleNameParser._();
+
+  static ({String brand, String model, int? year}) parse(String rawName) {
+    final trimmed = rawName.trim();
+    final yearMatch = RegExp(r'\b(19|20)\d{2}\b').firstMatch(trimmed);
+
+    if (yearMatch == null) {
+      return (brand: trimmed, model: '', year: null);
+    }
+
+    final year = int.parse(yearMatch.group(0)!);
+    final nameWithoutYear =
+        trimmed.replaceAll(yearMatch.group(0)!, '').trim().replaceAll(RegExp(r'\s+'), ' ');
+
+    return (brand: nameWithoutYear, model: '', year: year);
   }
 }

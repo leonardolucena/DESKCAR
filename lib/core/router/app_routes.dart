@@ -1,10 +1,12 @@
 abstract final class AppRoutes {
+  static const settings = '/settings';
   static const repairs = '/repairs';
   static const addService = '/repairs/add';
   static const papers = '/papers';
   static const reminders = '/reminders';
   static const reports = '/reports';
   static const garage = '/garage';
+  static const addVehicle = '/garage/add';
   static const carDetail = '/cars/:id';
 
   static String carDetailPath(String id) => '/cars/$id';

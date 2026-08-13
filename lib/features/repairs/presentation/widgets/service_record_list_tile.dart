@@ -34,34 +34,37 @@ class ServiceRecordListTile extends StatelessWidget {
             children: [
               _CategoryIcon(category: category),
               SizedBox(width: AppSizes.spacingMd),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    AppDateFormatter.formatDayMonthYear(record.serviceDate),
+                    maxLines: 1,
+                    softWrap: false,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  if (record.mileage != null) ...[
+                    SizedBox(height: AppSizes.spacingXs / 2),
                     Text(
-                      AppDateFormatter.formatDayMonthYear(record.serviceDate),
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      AppCurrencyFormatter.formatMileage(
+                        record.mileage!,
+                        record.distanceUnit.label,
+                      ),
+                      maxLines: 1,
+                      softWrap: false,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: AppColors.repairsMileageBlue,
                             fontWeight: FontWeight.w700,
                           ),
                     ),
-                    if (record.mileage != null) ...[
-                      SizedBox(height: AppSizes.spacingXs / 2),
-                      Text(
-                        AppCurrencyFormatter.formatMileage(
-                          record.mileage!,
-                          record.distanceUnit.label,
-                        ),
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: AppColors.repairsMileageBlue,
-                              fontWeight: FontWeight.w700,
-                            ),
-                      ),
-                    ],
                   ],
-                ),
+                ],
               ),
+              SizedBox(width: AppSizes.spacingSm),
               Expanded(
-                flex: 2,
                 child: Padding(
                   padding: EdgeInsets.only(top: AppSizes.spacingXs / 2),
                   child: Text(
@@ -114,6 +117,8 @@ class _CostColumn extends StatelessWidget {
       children: [
         Text(
           AppCurrencyFormatter.formatAmount(record.totalAmount),
+          maxLines: 1,
+          softWrap: false,
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 color: AppColors.repairsTotalGreen,
                 fontWeight: FontWeight.w800,
@@ -156,6 +161,8 @@ class _CostDetailRow extends StatelessWidget {
         SizedBox(width: AppSizes.spacingXs / 2),
         Text(
           AppCurrencyFormatter.formatAmount(amount),
+          maxLines: 1,
+          softWrap: false,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: AppColors.repairsCostMuted,
                 fontWeight: FontWeight.w500,

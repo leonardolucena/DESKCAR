@@ -34,4 +34,12 @@ class VehicleRepositoryImpl implements VehicleRepository {
       return rows.map((row) => row.toEntity()).toList();
     });
   }
+
+  @override
+  AppAsyncResult<VehicleEntity> createVehicle(VehicleEntity vehicle) {
+    return runAppResult(() async {
+      await _database.into(_database.vehiclesTable).insert(vehicle.toCompanion());
+      return vehicle;
+    });
+  }
 }

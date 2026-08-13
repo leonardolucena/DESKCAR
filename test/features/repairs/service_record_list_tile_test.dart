@@ -20,6 +20,9 @@ void main() {
     laborAmount: 250,
     partsAmount: 320,
     distanceUnit: DistanceUnit.km,
+    recordType: ServiceRecordType.repair,
+    createdAt: DateTime(2026, 1, 24),
+    updatedAt: DateTime(2026, 1, 24),
   );
 
   testWidgets('ServiceRecordListTile shows date, mileage and costs', (

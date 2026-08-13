@@ -47,22 +47,22 @@ class _SelectServiceBottomSheetState extends State<SelectServiceBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final options = _filteredOptions;
-    final maxHeight = MediaQuery.sizeOf(context).height * 0.85;
+    final sheetHeight = MediaQuery.sizeOf(context).height * 0.8;
+    const sheetTopRadius = 28.0;
 
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.viewInsetsOf(context).bottom,
       ),
       child: Container(
-        constraints: BoxConstraints(maxHeight: maxHeight),
+        height: sheetHeight,
         decoration: BoxDecoration(
           color: AppColors.backgroundCardLight,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(AppSizes.cardRadius),
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(sheetTopRadius),
           ),
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: AppSizes.spacingSm),
             Container(
@@ -85,6 +85,7 @@ class _SelectServiceBottomSheetState extends State<SelectServiceBottomSheet> {
                 children: [
                   Text(
                     'Selecione o serviço',
+                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w700,
                         ),

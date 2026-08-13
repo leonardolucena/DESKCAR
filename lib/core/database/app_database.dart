@@ -24,10 +24,44 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (migrator, from, to) async {
+          if (from < 2) {
+            await migrator.addColumn(
+              vehiclesTable,
+              vehiclesTable.purchaseDate,
+            );
+            await migrator.addColumn(
+              vehiclesTable,
+              vehiclesTable.vehicleType,
+            );
+            await migrator.addColumn(
+              vehiclesTable,
+              vehiclesTable.notes,
+            );
+          }
+          if (from < 3) {
+            await migrator.addColumn(
+              serviceRecordsTable,
+              serviceRecordsTable.category,
+            );
+            await migrator.addColumn(
+              serviceRecordsTable,
+              serviceRecordsTable.distanceUnit,
+            );
+            await migrator.addColumn(
+              serviceRecordsTable,
+              serviceRecordsTable.includeAccessoryCosts,
+            );
+            await migrator.addColumn(
+              serviceRecordsTable,
+              serviceRecordsTable.supplierCodes,
+            );
+          }
+        },
         beforeOpen: (details) async {
           await customStatement('PRAGMA foreign_keys = ON');
         },

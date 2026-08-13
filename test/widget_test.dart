@@ -1,4 +1,3 @@
-import 'package:deskcar/constants/app_assets.dart';
 import 'package:deskcar/core/errors/app_result.dart';
 import 'package:deskcar/features/garage/domain/entities/vehicle_entity.dart';
 import 'package:deskcar/features/garage/domain/repositories/vehicle_repository.dart';
@@ -19,6 +18,11 @@ class _FakeVehicleRepository implements VehicleRepository {
   @override
   Stream<List<VehicleEntity>> watchAllVehicles() {
     return Stream.value(const []);
+  }
+
+  @override
+  Future<AppResult<VehicleEntity>> createVehicle(VehicleEntity vehicle) async {
+    return appSuccess(vehicle);
   }
 }
 
@@ -41,7 +45,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.text(AppBranding.appName), findsOneWidget);
+    expect(find.text('Garagem'), findsOneWidget);
     expect(find.text('Sua garagem está vazia'), findsOneWidget);
   });
 }

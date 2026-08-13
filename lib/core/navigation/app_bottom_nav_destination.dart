@@ -12,15 +12,15 @@ enum AppBottomNavDestination {
     icon: Icons.assignment_outlined,
     route: AppRoutes.papers,
   ),
-  reminders(
-    label: 'Lembretes',
-    icon: Icons.notifications_outlined,
-    route: AppRoutes.reminders,
-  ),
   reports(
     label: 'Relatórios',
     icon: Icons.show_chart_outlined,
     route: AppRoutes.reports,
+  ),
+  settings(
+    label: 'Configurações',
+    icon: Icons.settings_outlined,
+    route: AppRoutes.settings,
   );
 
   const AppBottomNavDestination({

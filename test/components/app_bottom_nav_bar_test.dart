@@ -37,12 +37,13 @@ void main() {
 
     expect(find.text('Reparos'), findsOneWidget);
     expect(find.text('Papéis'), findsOneWidget);
-    expect(find.text('Lembretes'), findsOneWidget);
     expect(find.text('Relatórios'), findsOneWidget);
+    expect(find.text('Configurações'), findsOneWidget);
+    expect(find.text('Lembretes'), findsNothing);
 
-    await tester.tap(find.text('Lembretes'));
+    await tester.tap(find.text('Configurações'));
     await tester.pump();
 
-    expect(selected, AppBottomNavDestination.reminders);
+    expect(selected, AppBottomNavDestination.settings);
   });
 }

@@ -1,6 +1,28 @@
+enum VehicleType {
+  car,
+  motorcycle,
+  other;
+
+  String get storageValue => name;
+
+  static VehicleType fromStorage(String value) {
+    return VehicleType.values.firstWhere(
+      (type) => type.name == value,
+      orElse: () => VehicleType.car,
+    );
+  }
+
+  String get label => switch (this) {
+        VehicleType.car => 'carro',
+        VehicleType.motorcycle => 'moto',
+        VehicleType.other => 'outra',
+      };
+}
+
 enum DistanceUnit {
   km,
-  mi;
+  mi,
+  hours;
 
   String get storageValue => name;
 
@@ -14,6 +36,13 @@ enum DistanceUnit {
   String get label => switch (this) {
         DistanceUnit.km => 'km',
         DistanceUnit.mi => 'mi',
+        DistanceUnit.hours => 'h',
+      };
+
+  String get intervalSuffix => switch (this) {
+        DistanceUnit.km => 'km',
+        DistanceUnit.mi => 'mi',
+        DistanceUnit.hours => 'h',
       };
 }
 

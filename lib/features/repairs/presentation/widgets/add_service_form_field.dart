@@ -19,6 +19,7 @@ class AddServiceFormField extends StatelessWidget {
     this.fillColor,
     this.minLines,
     this.maxLines,
+    this.suffixText,
   });
 
   final TextEditingController? controller;
@@ -34,6 +35,7 @@ class AddServiceFormField extends StatelessWidget {
   final Color? fillColor;
   final int? minLines;
   final int? maxLines;
+  final String? suffixText;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +83,10 @@ class AddServiceFormField extends StatelessWidget {
                 horizontal: AppSizes.inputPaddingH,
                 vertical: AppSizes.inputPaddingV,
               ),
+              suffixText: suffixText,
+              suffixStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.repairsCostMuted,
+                  ),
             ),
           ),
         ),
