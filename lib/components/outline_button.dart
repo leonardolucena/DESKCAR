@@ -11,6 +11,7 @@ class AppOutlineButton extends StatelessWidget {
     this.color,
     this.enabled = true,
     this.expand = true,
+    this.fitSingleLine = false,
   });
 
   final String label;
@@ -19,6 +20,7 @@ class AppOutlineButton extends StatelessWidget {
   final Color? color;
   final bool enabled;
   final bool expand;
+  final bool fitSingleLine;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,8 @@ class AppOutlineButton extends StatelessWidget {
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: AppSizes.buttonPaddingH,
+              horizontal:
+                  fitSingleLine ? AppSizes.spacingSm : AppSizes.buttonPaddingH,
               vertical: AppSizes.buttonPaddingV,
             ),
             child: AppButtonContent(
@@ -48,6 +51,7 @@ class AppOutlineButton extends StatelessWidget {
               icon: icon,
               color: contentColor,
               expand: expand,
+              fitSingleLine: fitSingleLine,
             ),
           ),
         ),

@@ -19,6 +19,8 @@ import 'package:deskcar/features/garage/domain/repositories/vehicle_repository.d
     as _i32;
 import 'package:deskcar/features/garage/presentation/cubit/garage_cubit.dart'
     as _i445;
+import 'package:deskcar/features/repairs/presentation/cubit/repairs_cubit.dart'
+    as _i749;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -30,6 +32,7 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
+    gh.factory<_i749.RepairsCubit>(() => _i749.RepairsCubit());
     await gh.lazySingletonAsync<_i46.AppPaths>(
       () => appModule.appPaths(),
       preResolve: true,

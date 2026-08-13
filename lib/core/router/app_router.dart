@@ -6,6 +6,9 @@ import 'package:deskcar/features/garage/presentation/pages/car_detail_page.dart'
 import 'package:deskcar/features/garage/presentation/pages/garage_page.dart';
 import 'package:deskcar/features/papers/presentation/pages/papers_page.dart';
 import 'package:deskcar/features/reminders/presentation/pages/reminders_page.dart';
+import 'package:deskcar/features/repairs/domain/entities/repair_category.dart';
+import 'package:deskcar/features/repairs/presentation/cubit/repairs_cubit.dart';
+import 'package:deskcar/features/repairs/presentation/pages/add_service_page.dart';
 import 'package:deskcar/features/repairs/presentation/pages/repairs_page.dart';
 import 'package:deskcar/features/reports/presentation/pages/reports_page.dart';
 import 'package:flutter/foundation.dart';
@@ -24,8 +27,11 @@ class AppRouter {
         routes: [
           GoRoute(
             path: AppRoutes.repairs,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: RepairsPage(),
+            pageBuilder: (context, state) => NoTransitionPage(
+              child: BlocProvider(
+                create: (_) => getIt<RepairsCubit>()..load(),
+                child: const RepairsPage(),
+              ),
             ),
           ),
           GoRoute(
@@ -47,6 +53,16 @@ class AppRouter {
             ),
           ),
         ],
+      ),
+      GoRoute(
+        path: AppRoutes.addService,
+        builder: (context, state) {
+          final categoryName =
+              state.uri.queryParameters['category'] ?? RepairCategory.other.name;
+          final category = RepairCategory.fromName(categoryName);
+
+          return AddServicePage(category: category);
+        },
       ),
       GoRoute(
         path: AppRoutes.garage,

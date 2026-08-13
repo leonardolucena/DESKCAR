@@ -9,6 +9,7 @@ class AppButtonContent extends StatelessWidget {
     this.icon,
     this.labelStyle,
     this.expand = true,
+    this.fitSingleLine = false,
   });
 
   final String label;
@@ -16,11 +17,49 @@ class AppButtonContent extends StatelessWidget {
   final IconData? icon;
   final TextStyle? labelStyle;
   final bool expand;
+  final bool fitSingleLine;
 
   @override
   Widget build(BuildContext context) {
     final textStyle = (labelStyle ?? Theme.of(context).textTheme.labelLarge)
         ?.copyWith(color: color);
+
+    Widget buildLabel() {
+      if (fitSingleLine) {
+        return Expanded(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.center,
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              softWrap: false,
+              overflow: TextOverflow.visible,
+              style: textStyle,
+            ),
+          ),
+        );
+      }
+
+      if (expand) {
+        return Flexible(
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            softWrap: true,
+            style: textStyle,
+          ),
+        );
+      }
+
+      return Text(
+        label,
+        textAlign: TextAlign.center,
+        softWrap: true,
+        style: textStyle,
+      );
+    }
 
     final content = Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -34,20 +73,7 @@ class AppButtonContent extends StatelessWidget {
           ),
           SizedBox(width: AppSizes.spacingXs),
         ],
-        if (expand)
-          Flexible(
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              style: textStyle,
-            ),
-          )
-        else
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: textStyle,
-          ),
+        buildLabel(),
       ],
     );
 

@@ -110,4 +110,19 @@ abstract final class AppColors {
   static const Color bottomNavBorderDark = Color(0xFF3F3F3F);
   static const Color bottomNavActiveDark = Color(0xFFF5F5F5);
   static const Color bottomNavInactiveDark = Color(0xFF9CA3AF);
+
+  // Repairs list
+  static const Color repairsTotalGreen = Color(0xFF2E7D32);
+  static const Color repairsMileageBlue = Color(0xFF2563EB);
+  static const Color repairsListDivider = Color(0xFFE4E8F4);
+  static const Color repairsCostMuted = Color(0xFF9CA3AF);
+  static const Color repairsFabBackground = Color(0xFF1E2A47);
+
+  // Formulários
+  static const Color formScreenBackground = Color(0xFFF0F2F9);
+  static const Color formFieldFill = Color(0xFFE8ECF8);
+  static const Color formFieldBorder = Color(0xFF8E97A8);
+  static const Color formCostFieldFill = Color(0xFFDFF2E3);
+  static const Color formInfoFieldFill = Color(0xFFE9ECEF);
+  static const Color formCostsHeader = Color(0xFF2E7D32);
 }
