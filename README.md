@@ -1,6 +1,6 @@
 # DeskCar
 
-Controle de despesas e manutenção veicular — offline-first, com design system compartilhado com InspetorSYS.
+Controle de despesas e manutenção veicular.
 
 **Stack:** Flutter 3.11+ · Dart 3.11+ · Drift (SQLite) · BLoC · go_router · injectable
 
