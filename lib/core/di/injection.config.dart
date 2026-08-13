@@ -29,6 +29,12 @@ import 'package:deskcar/features/repairs/domain/repositories/service_record_repo
     as _i704;
 import 'package:deskcar/features/repairs/presentation/cubit/repairs_cubit.dart'
     as _i749;
+import 'package:deskcar/features/reports/data/repositories/reports_repository_impl.dart'
+    as _i1012;
+import 'package:deskcar/features/reports/domain/repositories/reports_repository.dart'
+    as _i1022;
+import 'package:deskcar/features/reports/presentation/cubit/reports_cubit.dart'
+    as _i832;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -59,6 +65,18 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i32.VehicleRepository>(
       () => _i618.VehicleRepositoryImpl(gh<_i929.AppDatabase>()),
+    );
+    gh.factory<_i832.ReportsCubit>(
+      () => _i832.ReportsCubit(
+        gh<_i704.ServiceRecordRepository>(),
+        gh<_i32.VehicleRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i1022.ReportsRepository>(
+      () => _i1012.ReportsRepositoryImpl(
+        gh<_i704.ServiceRecordRepository>(),
+        gh<_i32.VehicleRepository>(),
+      ),
     );
     gh.factory<_i445.GarageCubit>(
       () => _i445.GarageCubit(gh<_i32.VehicleRepository>()),

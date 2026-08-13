@@ -125,4 +125,17 @@ abstract final class AppColors {
   static const Color formCostFieldFill = Color(0xFFDFF2E3);
   static const Color formInfoFieldFill = Color(0xFFE9ECEF);
   static const Color formCostsHeader = Color(0xFF2E7D32);
+
+  // Relatórios
+  static const Color reportsAccessoriesPurple = Color(0xFF7B1FA2);
+  static const Color reportsRepairsRed = Color(0xFFC62828);
+  static const Color reportsPapersGreen = Color(0xFF2E7D32);
+  static const Color reportsTotalBlue = Color(0xFF1E2A47);
+  static const Color reportsChartBorder = Color(0xFF1E2A47);
+  static const Color reportsChipSelectedBg = Color(0xFFE8ECF8);
+  static const Color reportsChipUnselectedBg = Color(0xFFE9ECEF);
+  static const Color reportsLegendRepairsBg = Color(0xFFFFEBEE);
+  static const Color reportsLegendPapersBg = Color(0xFFE8F5E9);
+  static const Color reportsLegendAccessoriesBg = Color(0xFFF3E5F5);
+  static const Color reportsLegendMileageBg = Color(0xFFE8ECF8);
 }

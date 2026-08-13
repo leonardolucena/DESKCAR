@@ -32,7 +32,7 @@ class AppSegmentedControl<T> extends StatelessWidget {
     final selectedIndex = segments.indexWhere(
       (segment) => segment.value == selected,
     );
-    final safeIndex = selectedIndex < 0 ? 0 : selectedIndex;
+    final hasSelection = selectedIndex >= 0;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final trackColor = AppSurfaceColors.segmentTrack(context);
     final trackBorderColor = AppSurfaceColors.segmentBorder(context);
@@ -53,39 +53,44 @@ class AppSegmentedControl<T> extends StatelessWidget {
           final segmentWidths = _segmentWidths(constraints.maxWidth);
           const thumbInset = 3.0;
           var thumbLeft = 0.0;
-          for (var index = 0; index < safeIndex; index++) {
-            thumbLeft += segmentWidths[index];
+          if (hasSelection) {
+            for (var index = 0; index < selectedIndex; index++) {
+              thumbLeft += segmentWidths[index];
+            }
           }
-          final thumbWidth = (segmentWidths[safeIndex] - (thumbInset * 2))
-              .clamp(0.0, double.infinity);
+          final thumbWidth = hasSelection
+              ? (segmentWidths[selectedIndex] - (thumbInset * 2))
+                  .clamp(0.0, double.infinity)
+              : 0.0;
 
           return Stack(
             fit: StackFit.expand,
             clipBehavior: Clip.hardEdge,
             children: [
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 220),
-                curve: Curves.easeInOutCubic,
-                left: thumbLeft + thumbInset,
-                top: thumbInset,
-                bottom: thumbInset,
-                width: thumbWidth,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: thumbColor,
-                    borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-                    boxShadow: isDark
-                        ? null
-                        : const [
-                            BoxShadow(
-                              color: Color(0x141D2847),
-                              blurRadius: 4,
-                              offset: Offset(0, 1),
-                            ),
-                          ],
+              if (hasSelection)
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeInOutCubic,
+                  left: thumbLeft + thumbInset,
+                  top: thumbInset,
+                  bottom: thumbInset,
+                  width: thumbWidth,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: thumbColor,
+                      borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+                      boxShadow: isDark
+                          ? null
+                          : const [
+                              BoxShadow(
+                                color: Color(0x141D2847),
+                                blurRadius: 4,
+                                offset: Offset(0, 1),
+                              ),
+                            ],
+                    ),
                   ),
                 ),
-              ),
               Row(
                 children: [
                   for (var index = 0; index < segments.length; index++)
@@ -93,7 +98,7 @@ class AppSegmentedControl<T> extends StatelessWidget {
                       flex: segments[index].flex,
                       child: _SegmentButton(
                         label: segments[index].label,
-                        isSelected: index == safeIndex,
+                        isSelected: hasSelection && index == selectedIndex,
                         selectedTextColor: selectedTextColor,
                         unselectedTextColor: unselectedTextColor,
                         onTap: () => onSelected(segments[index].value),

@@ -1,4 +1,5 @@
 import 'package:deskcar/core/database/app_database.dart';
+import 'package:deskcar/core/errors/app_failure.dart';
 import 'package:deskcar/core/errors/app_result.dart';
 import 'package:deskcar/features/repairs/data/mappers/service_record_mapper.dart';
 import 'package:deskcar/features/repairs/domain/entities/service_record_entity.dart';
@@ -36,6 +37,21 @@ class ServiceRecordRepositoryImpl implements ServiceRecordRepository {
   }
 
   @override
+  AppAsyncResult<ServiceRecordEntity> getRecordById(String id) {
+    return runAppResult(() async {
+      final row = await (_database.select(_database.serviceRecordsTable)
+            ..where((record) => record.id.equals(id)))
+          .getSingleOrNull();
+
+      if (row == null) {
+        throw const NotFoundFailure();
+      }
+
+      return row.toEntity();
+    });
+  }
+
+  @override
   AppAsyncResult<ServiceRecordEntity> createRecord(
     ServiceRecordEntity record,
   ) {
@@ -43,6 +59,23 @@ class ServiceRecordRepositoryImpl implements ServiceRecordRepository {
       await _database
           .into(_database.serviceRecordsTable)
           .insert(record.toCompanion());
+      return record;
+    });
+  }
+
+  @override
+  AppAsyncResult<ServiceRecordEntity> updateRecord(
+    ServiceRecordEntity record,
+  ) {
+    return runAppResult(() async {
+      final updatedRows = await (_database.update(_database.serviceRecordsTable)
+            ..where((row) => row.id.equals(record.id)))
+          .write(record.toUpdateCompanion());
+
+      if (updatedRows == 0) {
+        throw const NotFoundFailure();
+      }
+
       return record;
     });
   }

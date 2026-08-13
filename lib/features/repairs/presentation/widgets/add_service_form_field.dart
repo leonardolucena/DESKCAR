@@ -20,6 +20,7 @@ class AddServiceFormField extends StatelessWidget {
     this.minLines,
     this.maxLines,
     this.suffixText,
+    this.suffixIcon,
   });
 
   final TextEditingController? controller;
@@ -36,6 +37,7 @@ class AddServiceFormField extends StatelessWidget {
   final int? minLines;
   final int? maxLines;
   final String? suffixText;
+  final IconData? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +61,10 @@ class AddServiceFormField extends StatelessWidget {
             onChanged: onChanged,
             onTap: onTap,
             readOnly: readOnly,
-            keyboardType: keyboardType,
+            showCursor: !readOnly,
+            enableSuggestions: false,
+            autocorrect: false,
+            keyboardType: keyboardType ?? TextInputType.text,
             inputFormatters: inputFormatters,
             maxLength: maxLength,
             minLines: minLines,
@@ -87,6 +92,12 @@ class AddServiceFormField extends StatelessWidget {
               suffixStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppColors.repairsCostMuted,
                   ),
+              suffixIcon: suffixIcon == null
+                  ? null
+                  : Icon(
+                      suffixIcon,
+                      color: AppColors.repairsCostMuted,
+                    ),
             ),
           ),
         ),

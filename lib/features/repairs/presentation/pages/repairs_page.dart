@@ -1,7 +1,6 @@
 import 'package:deskcar/components/states/app_empty_state.dart';
 import 'package:deskcar/components/states/app_error_state.dart';
 import 'package:deskcar/components/states/app_loading_state.dart';
-import 'package:deskcar/core/feedback/app_snackbar.dart';
 import 'package:deskcar/core/responsive/app_sizes.dart';
 import 'package:deskcar/core/router/app_routes.dart';
 import 'package:deskcar/features/repairs/domain/entities/service_record_entity.dart';
@@ -172,9 +171,7 @@ class _RepairsList extends StatelessWidget {
         final record = filteredRecords[index];
         return ServiceRecordListTile(
           record: record,
-          onTap: () {
-            AppSnackbar.info(context, 'Detalhe em breve.');
-          },
+          onTap: () => context.push(AppRoutes.editServicePath(record.id)),
         );
       },
     );

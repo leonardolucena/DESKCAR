@@ -6,5 +6,9 @@ abstract interface class ServiceRecordRepository {
 
   AppAsyncResult<List<ServiceRecordEntity>> getAllRecords();
 
+  AppAsyncResult<ServiceRecordEntity> getRecordById(String id);
+
   AppAsyncResult<ServiceRecordEntity> createRecord(ServiceRecordEntity record);
+
+  AppAsyncResult<ServiceRecordEntity> updateRecord(ServiceRecordEntity record);
 }

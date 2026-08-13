@@ -48,4 +48,23 @@ extension ServiceRecordEntityMapper on ServiceRecordEntity {
       updatedAt: updatedAt,
     );
   }
+
+  ServiceRecordsTableCompanion toUpdateCompanion() {
+    return ServiceRecordsTableCompanion(
+      vehicleId: Value(vehicleId),
+      type: Value(recordType.storageValue),
+      title: Value(title),
+      notes: Value(notes),
+      serviceDate: Value(serviceDate),
+      mileage: Value(mileage),
+      totalAmount: Value(totalAmount),
+      partsAmount: Value(partsAmount),
+      laborAmount: Value(laborAmount),
+      category: Value(category.name),
+      distanceUnit: Value(distanceUnit.storageValue),
+      includeAccessoryCosts: Value(includeAccessoryCosts),
+      supplierCodes: Value(supplierCodes),
+      updatedAt: Value(updatedAt),
+    );
+  }
 }

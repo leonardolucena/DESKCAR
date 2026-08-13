@@ -13,4 +13,6 @@ abstract final class AppRoutes {
 
   static String addServicePath(String category) =>
       '$addService?category=$category';
+
+  static String editServicePath(String id) => '$addService?id=$id';
 }

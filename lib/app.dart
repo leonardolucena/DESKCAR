@@ -2,6 +2,7 @@ import 'package:deskcar/constants/app_assets.dart';
 import 'package:deskcar/core/feedback/app_snackbar.dart';
 import 'package:deskcar/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -23,6 +24,15 @@ class DeskCarApp extends StatelessWidget {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: ThemeMode.system,
+          locale: const Locale('pt', 'BR'),
+          supportedLocales: const [
+            Locale('pt', 'BR'),
+          ],
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
           scaffoldMessengerKey: AppSnackbar.messengerKey,
           routerConfig: router,
         );

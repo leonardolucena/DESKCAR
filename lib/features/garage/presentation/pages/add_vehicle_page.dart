@@ -346,7 +346,6 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
                 AddServiceFormField(
                   controller: _dateIntervalController,
                   label: 'Intervalo por data',
-                  keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   suffixText: 'meses',
                 ),
@@ -354,7 +353,6 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
                 AddServiceFormField(
                   controller: _mileageIntervalController,
                   label: 'Intervalo por quilometragem',
-                  keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   suffixText: _distanceUnit.intervalSuffix,
                 ),

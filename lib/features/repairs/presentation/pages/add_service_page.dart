@@ -1,10 +1,12 @@
 import 'package:deskcar/components/outline_button.dart';
+import 'package:deskcar/components/states/app_loading_state.dart';
 import 'package:deskcar/core/di/injection.dart';
 import 'package:deskcar/core/errors/failure_message_mapper.dart';
 import 'package:deskcar/core/feedback/app_snackbar.dart';
 import 'package:deskcar/core/responsive/app_sizes.dart';
 import 'package:deskcar/core/utils/formatters.dart';
 import 'package:deskcar/features/garage/domain/entities/garage_enums.dart';
+import 'package:deskcar/features/garage/domain/entities/vehicle_entity.dart';
 import 'package:deskcar/features/garage/domain/repositories/vehicle_repository.dart';
 import 'package:deskcar/features/repairs/domain/entities/repair_category.dart';
 import 'package:deskcar/features/repairs/domain/entities/service_record_entity.dart';
@@ -14,6 +16,7 @@ import 'package:deskcar/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:uuid/uuid.dart';
 
@@ -21,18 +24,24 @@ class AddServicePage extends StatefulWidget {
   const AddServicePage({
     super.key,
     required this.category,
+    this.recordId,
   });
 
   final RepairCategory category;
+  final String? recordId;
 
   @override
   State<AddServicePage> createState() => _AddServicePageState();
 }
 
 class _AddServicePageState extends State<AddServicePage> {
+  static final _editableAmountFormat = NumberFormat('#,##0.##', 'pt_BR');
   static const _maxNameLength = 70;
   static const _maxSupplierCodesLength = 300;
   static const _maxCommentLength = 1000;
+  static final _currencyInputFormatters = [
+    FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
+  ];
 
   final _nameController = TextEditingController();
   final _mileageController = TextEditingController();
@@ -48,11 +57,70 @@ class _AddServicePageState extends State<AddServicePage> {
   );
   bool _includeAccessoryCosts = false;
   bool _isSaving = false;
+  bool _isLoadingRecord = false;
+  ServiceRecordEntity? _existingRecord;
+
+  bool get _isEditing => widget.recordId != null;
+
+  RepairCategory get _category =>
+      _existingRecord?.category ?? widget.category;
 
   @override
   void initState() {
     super.initState();
-    _nameController.text = widget.category.label;
+    if (_isEditing) {
+      _loadExistingRecord();
+    } else {
+      _nameController.text = widget.category.label;
+    }
+  }
+
+  Future<void> _loadExistingRecord() async {
+    setState(() => _isLoadingRecord = true);
+
+    final result = await getIt<ServiceRecordRepository>().getRecordById(
+      widget.recordId!,
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    result.fold(
+      (record) {
+        _populateFromRecord(record);
+        setState(() => _isLoadingRecord = false);
+      },
+      (failure) {
+        setState(() => _isLoadingRecord = false);
+        AppSnackbar.error(
+          context,
+          FailureMessageMapper.message(failure),
+        );
+        context.pop();
+      },
+    );
+  }
+
+  void _populateFromRecord(ServiceRecordEntity record) {
+    _existingRecord = record;
+    _nameController.text = record.title;
+    _mileageController.text = record.mileage?.round().toString() ?? '';
+    _serviceDate = record.serviceDate;
+    _dateController.text = AppDateFormatter.formatDayMonthYear(record.serviceDate);
+    _includeAccessoryCosts = record.includeAccessoryCosts;
+    _partsController.text = _formatEditableAmount(record.partsAmount);
+    _laborController.text = _formatEditableAmount(record.laborAmount);
+    _totalController.text = _formatEditableAmount(record.totalAmount);
+    _supplierCodesController.text = record.supplierCodes ?? '';
+    _commentController.text = record.notes ?? '';
+  }
+
+  String _formatEditableAmount(double value) {
+    if (value <= 0) {
+      return '';
+    }
+    return _editableAmountFormat.format(value);
   }
 
   @override
@@ -93,19 +161,25 @@ class _AddServicePageState extends State<AddServicePage> {
 
     setState(() => _isSaving = true);
 
-    final vehiclesResult = await getIt<VehicleRepository>().getAllVehicles();
-    if (!mounted) {
-      return;
-    }
+    final vehicleId = _existingRecord?.vehicleId;
+    final distanceUnit = _existingRecord?.distanceUnit;
 
-    final vehicle = vehiclesResult.getOrNull()?.firstOrNull;
-    if (vehicle == null) {
-      setState(() => _isSaving = false);
-      AppSnackbar.error(
-        context,
-        'Cadastre um veículo na garagem antes de adicionar uma nota.',
-      );
-      return;
+    VehicleEntity? vehicle;
+    if (!_isEditing) {
+      final vehiclesResult = await getIt<VehicleRepository>().getAllVehicles();
+      if (!mounted) {
+        return;
+      }
+
+      vehicle = vehiclesResult.getOrNull()?.firstOrNull;
+      if (vehicle == null) {
+        setState(() => _isSaving = false);
+        AppSnackbar.error(
+          context,
+          'Cadastre um veículo na garagem antes de adicionar uma nota.',
+        );
+        return;
+      }
     }
 
     final partsAmount = AppCurrencyFormatter.parseAmount(_partsController.text) ?? 0;
@@ -129,25 +203,28 @@ class _AddServicePageState extends State<AddServicePage> {
     final now = DateTime.now();
 
     final record = ServiceRecordEntity(
-      id: const Uuid().v4(),
-      vehicleId: vehicle.id,
+      id: _existingRecord?.id ?? const Uuid().v4(),
+      vehicleId: vehicleId ?? vehicle!.id,
       title: title,
-      category: widget.category,
+      category: _category,
       serviceDate: _serviceDate,
       mileage: mileage,
       totalAmount: totalAmount,
       partsAmount: partsAmount,
       laborAmount: laborAmount,
-      distanceUnit: vehicle.distanceUnit,
+      distanceUnit: distanceUnit ?? vehicle!.distanceUnit,
       notes: notes.isEmpty ? null : notes,
       supplierCodes: supplierCodes.isEmpty ? null : supplierCodes,
       includeAccessoryCosts: _includeAccessoryCosts,
-      recordType: ServiceRecordType.repair,
-      createdAt: now,
+      recordType: _existingRecord?.recordType ?? ServiceRecordType.repair,
+      createdAt: _existingRecord?.createdAt ?? now,
       updatedAt: now,
     );
 
-    final result = await getIt<ServiceRecordRepository>().createRecord(record);
+    final repository = getIt<ServiceRecordRepository>();
+    final result = _isEditing
+        ? await repository.updateRecord(record)
+        : await repository.createRecord(record);
 
     if (!mounted) {
       return;
@@ -157,7 +234,10 @@ class _AddServicePageState extends State<AddServicePage> {
 
     result.fold(
       (_) {
-        AppSnackbar.success(context, 'Serviço salvo.');
+        AppSnackbar.success(
+          context,
+          _isEditing ? 'Serviço atualizado.' : 'Serviço salvo.',
+        );
         context.pop();
       },
       (failure) => AppSnackbar.error(
@@ -185,7 +265,7 @@ class _AddServicePageState extends State<AddServicePage> {
           icon: const Icon(Icons.close),
         ),
         title: Text(
-          'Adicionar serviço',
+          _isEditing ? 'Editar serviço' : 'Adicionar serviço',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
               ),
@@ -207,7 +287,9 @@ class _AddServicePageState extends State<AddServicePage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: _isLoadingRecord
+          ? const AppLoadingState(itemCount: 4)
+          : SingleChildScrollView(
         padding: EdgeInsets.all(AppSizes.cardPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -215,7 +297,7 @@ class _AddServicePageState extends State<AddServicePage> {
             _FormCard(
               children: [
                 _IconSection(
-                  category: widget.category,
+                  category: _category,
                   onChangeImagePressed: () {
                     AppSnackbar.info(context, 'Seleção de imagem em breve.');
                   },
@@ -231,8 +313,7 @@ class _AddServicePageState extends State<AddServicePage> {
                 SizedBox(height: AppSizes.spacingMd),
                 AddServiceFormField(
                   controller: _mileageController,
-                  hintText: 'Quilometragem',
-                  keyboardType: TextInputType.number,
+                  label: 'Quilometragem',
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
                 SizedBox(height: AppSizes.spacingMd),
@@ -241,6 +322,7 @@ class _AddServicePageState extends State<AddServicePage> {
                   readOnly: true,
                   onTap: _pickDate,
                   controller: _dateController,
+                  suffixIcon: Icons.calendar_today_outlined,
                 ),
                 SizedBox(height: AppSizes.spacingLg),
                 Row(
@@ -276,38 +358,23 @@ class _AddServicePageState extends State<AddServicePage> {
                 SizedBox(height: AppSizes.spacingMd),
                 AddServiceFormField(
                   controller: _partsController,
-                  hintText: 'Peças',
+                  label: 'Peças',
                   fillColor: AppColors.formCostFieldFill,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
-                  ],
+                  inputFormatters: _currencyInputFormatters,
                 ),
                 SizedBox(height: AppSizes.spacingMd),
                 AddServiceFormField(
                   controller: _laborController,
-                  hintText: 'Trabalho',
+                  label: 'Trabalho',
                   fillColor: AppColors.formCostFieldFill,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
-                  ],
+                  inputFormatters: _currencyInputFormatters,
                 ),
                 SizedBox(height: AppSizes.spacingMd),
                 AddServiceFormField(
                   controller: _totalController,
-                  hintText: 'Total',
+                  label: 'Total',
                   fillColor: AppColors.formCostFieldFill,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
-                  ],
+                  inputFormatters: _currencyInputFormatters,
                 ),
                 SizedBox(height: AppSizes.spacingLg),
                 AppOutlineButton(

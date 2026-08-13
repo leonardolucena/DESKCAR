@@ -11,6 +11,7 @@ import 'package:deskcar/features/repairs/domain/entities/repair_category.dart';
 import 'package:deskcar/features/repairs/presentation/cubit/repairs_cubit.dart';
 import 'package:deskcar/features/repairs/presentation/pages/add_service_page.dart';
 import 'package:deskcar/features/repairs/presentation/pages/repairs_page.dart';
+import 'package:deskcar/features/reports/presentation/cubit/reports_cubit.dart';
 import 'package:deskcar/features/reports/presentation/pages/reports_page.dart';
 import 'package:deskcar/features/settings/presentation/pages/settings_page.dart';
 import 'package:flutter/foundation.dart';
@@ -56,8 +57,11 @@ class AppRouter {
           ),
           GoRoute(
             path: AppRoutes.reports,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: ReportsPage(),
+            pageBuilder: (context, state) => NoTransitionPage(
+              child: BlocProvider(
+                create: (_) => getIt<ReportsCubit>()..load(),
+                child: const ReportsPage(),
+              ),
             ),
           ),
         ],
@@ -65,11 +69,15 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.addService,
         builder: (context, state) {
+          final recordId = state.uri.queryParameters['id'];
           final categoryName =
               state.uri.queryParameters['category'] ?? RepairCategory.other.name;
           final category = RepairCategory.fromName(categoryName);
 
-          return AddServicePage(category: category);
+          return AddServicePage(
+            category: category,
+            recordId: recordId,
+          );
         },
       ),
       GoRoute(
