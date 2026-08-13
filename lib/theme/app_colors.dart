@@ -99,4 +99,15 @@ abstract final class AppColors {
   static const Color mapControlBackground = Color(0xFF2C2C2C);
   static const Color mapControlBorder = Color(0xFF3F3F3F);
   static const Color mapControlIcon = Color(0xFFF5F5F5);
+
+  // Bottom navigation
+  static const Color bottomNavBackgroundLight = Color(0xFFFFFFFF);
+  static const Color bottomNavBorderLight = Color(0xFFE4E8F4);
+  static const Color bottomNavActiveLight = Color(0xFF1E2A47);
+  static const Color bottomNavInactiveLight = Color(0xFF9CA3AF);
+
+  static const Color bottomNavBackgroundDark = Color(0xFF2C2C2C);
+  static const Color bottomNavBorderDark = Color(0xFF3F3F3F);
+  static const Color bottomNavActiveDark = Color(0xFFF5F5F5);
+  static const Color bottomNavInactiveDark = Color(0xFF9CA3AF);
 }

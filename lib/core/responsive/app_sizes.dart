@@ -33,4 +33,6 @@ abstract final class AppSizes {
   static double get shimmerRadius => 1.5.w;
   static double get mapHeight => 25.h;
   static double get mapMarkerSize => 9.w;
+  static double get bottomNavHeight => 8.h;
+  static double get bottomNavIconSize => 6.w;
 }
