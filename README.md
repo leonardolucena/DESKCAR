@@ -182,7 +182,3 @@ App configurado para **`pt_BR`** (`intl`, formatação de datas e valores monet�
 | `flutter pub outdated` | Verificar dependências desatualizadas |
 
 ---
-
-## Licença
-
-Projeto privado — `publish_to: 'none'`.
