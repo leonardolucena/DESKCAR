@@ -1,6 +1,7 @@
 import 'package:deskcar/core/responsive/app_sizes.dart';
 import 'package:deskcar/core/utils/formatters.dart';
 import 'package:deskcar/theme/app_colors.dart';
+import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:flutter/material.dart';
 
 class ReportsSummarySection extends StatelessWidget {
@@ -88,9 +89,9 @@ class _SummaryCard extends StatelessWidget {
         vertical: 7,
       ),
       decoration: BoxDecoration(
-        color: AppColors.backgroundCardLight,
+        color: AppSurfaceColors.cardBackground(context),
         borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-        border: Border.all(color: AppColors.reportsChartBorder),
+        border: Border.all(color: AppSurfaceColors.chartBorder(context)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -11,7 +11,7 @@ import 'package:deskcar/features/papers/domain/entities/paper_document_category.
 import 'package:deskcar/features/repairs/domain/entities/service_record_entity.dart';
 import 'package:deskcar/features/repairs/domain/repositories/service_record_repository.dart';
 import 'package:deskcar/features/repairs/presentation/widgets/add_service_form_field.dart';
-import 'package:deskcar/theme/app_colors.dart';
+import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -228,9 +228,8 @@ class _AddDocumentPageState extends State<AddDocumentPage> {
     final nameLength = _nameController.text.characters.length;
 
     return Scaffold(
-      backgroundColor: AppColors.formScreenBackground,
+      backgroundColor: AppSurfaceColors.formScreenBackground(context),
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundCardLight,
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
         leading: IconButton(
@@ -269,7 +268,7 @@ class _AddDocumentPageState extends State<AddDocumentPage> {
                 width: double.infinity,
                 padding: EdgeInsets.all(AppSizes.cardPadding),
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundCardLight,
+                  color: AppSurfaceColors.cardBackground(context),
                   borderRadius: BorderRadius.circular(AppSizes.cardRadius),
                 ),
                 child: Column(
@@ -333,7 +332,7 @@ class _AddDocumentPageState extends State<AddDocumentPage> {
                     AddServiceFormField(
                       controller: _totalController,
                       label: 'Custo total',
-                      fillColor: AppColors.formCostFieldFill,
+                      fillColor: AppSurfaceColors.formCostFieldFill(context),
                       inputFormatters: _currencyInputFormatters,
                     ),
                   ],

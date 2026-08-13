@@ -1,5 +1,5 @@
 import 'package:deskcar/core/responsive/app_sizes.dart';
-import 'package:deskcar/theme/app_colors.dart';
+import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:flutter/material.dart';
 
 class PapersAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -93,7 +93,7 @@ class PapersEmptyMessage extends StatelessWidget {
           'Adicione aqui informações sobre multas, impostos, seguros e outros documentos.',
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppColors.repairsCostMuted,
+                color: AppSurfaceColors.mutedText(context),
               ),
         ),
       ),

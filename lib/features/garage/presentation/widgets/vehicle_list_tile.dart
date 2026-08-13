@@ -1,7 +1,6 @@
 import 'package:deskcar/core/responsive/app_sizes.dart';
 import 'package:deskcar/core/utils/formatters.dart';
 import 'package:deskcar/features/garage/domain/entities/vehicle_entity.dart';
-import 'package:deskcar/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class VehicleListTile extends StatelessWidget {
@@ -30,7 +29,7 @@ class VehicleListTile extends StatelessWidget {
               Icon(
                 Icons.directions_car_filled_outlined,
                 size: AppSizes.iconLg,
-                color: AppColors.bottomNavActiveLight,
+                color: Theme.of(context).colorScheme.primary,
               ),
               SizedBox(width: AppSizes.spacingMd),
               Expanded(

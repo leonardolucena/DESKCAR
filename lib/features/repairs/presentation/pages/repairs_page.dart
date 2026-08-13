@@ -1,3 +1,4 @@
+import 'package:deskcar/components/paginated_staggered_list_view.dart';
 import 'package:deskcar/components/states/app_empty_state.dart';
 import 'package:deskcar/components/states/app_error_state.dart';
 import 'package:deskcar/components/states/app_loading_state.dart';
@@ -9,7 +10,7 @@ import 'package:deskcar/features/repairs/presentation/cubit/repairs_state.dart';
 import 'package:deskcar/features/repairs/presentation/widgets/repairs_app_bar.dart';
 import 'package:deskcar/features/repairs/presentation/widgets/select_service_bottom_sheet.dart';
 import 'package:deskcar/features/repairs/presentation/widgets/service_record_list_tile.dart';
-import 'package:deskcar/theme/app_colors.dart';
+import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -77,7 +78,7 @@ class _RepairsPageState extends State<RepairsPage> {
             state.status == RepairsStatus.loaded && state.records.isNotEmpty;
 
         return Scaffold(
-          backgroundColor: AppColors.backgroundCardLight,
+          backgroundColor: AppSurfaceColors.cardBackground(context),
           appBar: RepairsAppBar(
             isSearching: _isSearching,
             searchController: _searchController,
@@ -98,13 +99,17 @@ class _RepairsPageState extends State<RepairsPage> {
                 filteredRecords: _filterRecords(state.records),
                 isSearching: _isSearching,
                 searchQuery: _searchQuery,
+                listAnimationKey: Object.hash(
+                  Object.hashAll(state.records.map((record) => record.id)),
+                  _searchQuery,
+                ),
                 onAddPressed: () => _openNewRepairFlow(context),
               ),
           },
           floatingActionButton: hasRecords
               ? FloatingActionButton(
-                  backgroundColor: AppColors.repairsFabBackground,
-                  foregroundColor: AppColors.backgroundCardLight,
+                  backgroundColor: AppSurfaceColors.fabBackground(context),
+                  foregroundColor: AppSurfaceColors.fabForeground(context),
                   onPressed: () => _openNewRepairFlow(context),
                   child: const Icon(Icons.add),
                 )
@@ -121,6 +126,7 @@ class _RepairsList extends StatelessWidget {
     required this.filteredRecords,
     required this.isSearching,
     required this.searchQuery,
+    required this.listAnimationKey,
     required this.onAddPressed,
   });
 
@@ -128,6 +134,7 @@ class _RepairsList extends StatelessWidget {
   final List<ServiceRecordEntity> filteredRecords;
   final bool isSearching;
   final String searchQuery;
+  final int listAnimationKey;
   final VoidCallback onAddPressed;
 
   @override
@@ -151,24 +158,28 @@ class _RepairsList extends StatelessWidget {
             'Nenhuma nota encontrada para "$searchQuery".',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.repairsCostMuted,
+                  color: AppSurfaceColors.mutedText(context),
                 ),
           ),
         ),
       );
     }
 
-    return ListView.separated(
+    return AppPaginatedStaggeredListView(
       itemCount: filteredRecords.length,
+      listAnimationKey: listAnimationKey,
+      animateItems: !isSearching,
+      itemKeyBuilder: (index) => filteredRecords[index].id,
       separatorBuilder: (context, index) => Divider(
         height: 1,
         thickness: 1,
-        color: AppColors.repairsListDivider,
+        color: AppSurfaceColors.listDivider(context),
         indent: AppSizes.cardPadding,
         endIndent: AppSizes.cardPadding,
       ),
       itemBuilder: (context, index) {
         final record = filteredRecords[index];
+
         return ServiceRecordListTile(
           record: record,
           onTap: () => context.push(AppRoutes.editServicePath(record.id)),

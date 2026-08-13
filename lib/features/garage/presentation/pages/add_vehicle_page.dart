@@ -14,7 +14,7 @@ import 'package:deskcar/features/garage/domain/repositories/reminder_repository.
 import 'package:deskcar/features/garage/domain/repositories/vehicle_repository.dart';
 import 'package:deskcar/features/repairs/domain/entities/repair_category.dart';
 import 'package:deskcar/features/repairs/presentation/widgets/add_service_form_field.dart';
-import 'package:deskcar/theme/app_colors.dart';
+import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -91,7 +91,7 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
             maxHeight: MediaQuery.sizeOf(context).height * 0.6,
           ),
           decoration: BoxDecoration(
-            color: AppColors.backgroundCardLight,
+            color: AppSurfaceColors.cardBackground(context),
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(AppSizes.cardRadius),
             ),
@@ -204,9 +204,8 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
     final commentLength = _commentController.text.characters.length;
 
     return Scaffold(
-      backgroundColor: AppColors.formScreenBackground,
+      backgroundColor: AppSurfaceColors.formScreenBackground(context),
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundCardLight,
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
         leading: IconButton(
@@ -218,7 +217,6 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
           'Adicionar veículo',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
-                color: AppColors.bottomNavActiveLight,
               ),
         ),
         actions: [
@@ -364,7 +362,7 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
                 AddServiceFormField(
                   controller: _commentController,
                   hintText: 'Comente',
-                  fillColor: AppColors.formInfoFieldFill,
+                  fillColor: AppSurfaceColors.formInfoFieldFill(context),
                   maxLength: _maxCommentLength,
                   minLines: 4,
                   counterText: '$commentLength/$_maxCommentLength',
@@ -400,7 +398,7 @@ class _FormCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(AppSizes.cardPadding),
       decoration: BoxDecoration(
-        color: AppColors.backgroundCardLight,
+        color: AppSurfaceColors.cardBackground(context),
         borderRadius: BorderRadius.circular(AppSizes.cardRadius),
       ),
       child: Column(
@@ -422,7 +420,6 @@ class _SectionTitle extends StatelessWidget {
       text,
       style: Theme.of(context).textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.w700,
-            color: AppColors.bottomNavActiveLight,
           ),
     );
   }
@@ -439,7 +436,7 @@ class _PhotoSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Material(
-          color: AppColors.formFieldFill,
+          color: AppSurfaceColors.formFieldFill(context),
           borderRadius: BorderRadius.circular(AppSizes.cardRadius),
           child: InkWell(
             onTap: onPressed,
@@ -450,7 +447,7 @@ class _PhotoSection extends StatelessWidget {
               child: Icon(
                 Icons.add_a_photo_outlined,
                 size: AppSizes.iconLg,
-                color: AppColors.bottomNavActiveLight,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
           ),

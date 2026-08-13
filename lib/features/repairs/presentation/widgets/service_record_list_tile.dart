@@ -3,6 +3,7 @@ import 'package:deskcar/core/utils/formatters.dart';
 import 'package:deskcar/features/repairs/domain/entities/repair_category.dart';
 import 'package:deskcar/features/repairs/domain/entities/service_record_entity.dart';
 import 'package:deskcar/theme/app_colors.dart';
+import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -154,7 +155,7 @@ class _CostDetailRow extends StatelessWidget {
         Icon(
           icon,
           size: 3.5.w,
-          color: AppColors.repairsCostMuted,
+          color: AppSurfaceColors.mutedText(context),
         ),
         SizedBox(width: AppSizes.spacingXs / 2),
         Text(
@@ -162,7 +163,7 @@ class _CostDetailRow extends StatelessWidget {
           maxLines: 1,
           softWrap: false,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.repairsCostMuted,
+                color: AppSurfaceColors.mutedText(context),
                 fontWeight: FontWeight.w500,
               ),
         ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:deskcar/core/responsive/app_sizes.dart';
-import 'package:deskcar/theme/app_colors.dart';
+import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:shimmer/shimmer.dart';
 
 class AppLoadingState extends StatelessWidget {
@@ -15,13 +15,8 @@ class AppLoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final baseColor = isDark
-        ? AppColors.borderCardDark
-        : AppColors.primaryTextColorLight.withValues(alpha: 0.08);
-    final highlightColor = isDark
-        ? AppColors.backgroundCardDark
-        : AppColors.backgroundCardLight;
+    final baseColor = AppSurfaceColors.shimmerBase(context);
+    final highlightColor = AppSurfaceColors.cardBackground(context);
 
     return ConstrainedBox(
       constraints: BoxConstraints(

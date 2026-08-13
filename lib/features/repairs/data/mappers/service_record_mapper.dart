@@ -1,6 +1,5 @@
 import 'package:deskcar/core/database/app_database.dart';
 import 'package:deskcar/features/garage/domain/entities/garage_enums.dart';
-import 'package:deskcar/features/repairs/domain/entities/repair_category.dart';
 import 'package:deskcar/features/repairs/domain/entities/service_record_entity.dart';
 import 'package:drift/drift.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:deskcar/core/responsive/app_sizes.dart';
-import 'package:deskcar/theme/app_colors.dart';
+import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -171,9 +171,9 @@ class _ReportsChartCardState extends State<ReportsChartCard> {
         width: double.infinity,
         padding: EdgeInsets.all(AppSizes.cardPadding),
         decoration: BoxDecoration(
-          color: AppColors.backgroundCardLight,
+          color: AppSurfaceColors.cardBackground(context),
           borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-          border: Border.all(color: AppColors.reportsChartBorder),
+          border: Border.all(color: AppSurfaceColors.chartBorder(context)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -205,6 +205,7 @@ class _ReportsChartCardState extends State<ReportsChartCard> {
                         labelStyle: labelStyle,
                         lineColor: primaryLine?.color,
                         lineValues: primaryLine?.values ?? const [],
+                        gridColor: AppSurfaceColors.listDivider(context),
                       )
                     : LineChart(
                         _chartData(context),
@@ -234,14 +235,15 @@ class _ReportsChartCardState extends State<ReportsChartCard> {
   LineChartData _buildChartData(BuildContext context) {
     final labelStyle = Theme.of(context).textTheme.labelSmall;
     final showAreaFill = widget.lines.length == 1;
+    final gridColor = AppSurfaceColors.listDivider(context);
 
     return LineChartData(
       gridData: FlGridData(
         show: true,
         drawVerticalLine: false,
         horizontalInterval: _resolvedYStep,
-        getDrawingHorizontalLine: (_) => const FlLine(
-          color: AppColors.repairsListDivider,
+        getDrawingHorizontalLine: (_) => FlLine(
+          color: gridColor,
           strokeWidth: 1,
         ),
       ),
@@ -268,7 +270,7 @@ class _ReportsChartCardState extends State<ReportsChartCard> {
       ),
       borderData: FlBorderData(
         show: true,
-        border: Border.all(color: AppColors.repairsListDivider),
+        border: Border.all(color: gridColor),
       ),
       minX: 0,
       maxX: _maxX,
@@ -482,6 +484,7 @@ class _ReportsSimpleChart extends StatelessWidget {
     required this.labelStyle,
     required this.lineColor,
     required this.lineValues,
+    required this.gridColor,
   });
 
   final double yMax;
@@ -491,6 +494,7 @@ class _ReportsSimpleChart extends StatelessWidget {
   final TextStyle? labelStyle;
   final Color? lineColor;
   final List<double> lineValues;
+  final Color gridColor;
 
   @override
   Widget build(BuildContext context) {
@@ -503,6 +507,7 @@ class _ReportsSimpleChart extends StatelessWidget {
               horizontalLines: _yAxisTickValues(yMax, 2).length,
               lineColor: lineColor,
               lineValues: lineValues,
+              gridColor: gridColor,
             ),
           ),
         ),
@@ -524,22 +529,24 @@ class _ReportsSimpleLinePainter extends CustomPainter {
     required this.horizontalLines,
     required this.lineColor,
     required this.lineValues,
+    required this.gridColor,
   });
 
   final double yMax;
   final int horizontalLines;
   final Color? lineColor;
   final List<double> lineValues;
+  final Color gridColor;
 
   @override
   void paint(Canvas canvas, Size size) {
     final borderPaint = Paint()
-      ..color = AppColors.repairsListDivider
+      ..color = gridColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
     final gridPaint = Paint()
-      ..color = AppColors.repairsListDivider
+      ..color = gridColor
       ..strokeWidth = 1;
 
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), borderPaint);
@@ -598,6 +605,7 @@ class _ReportsSimpleLinePainter extends CustomPainter {
     return oldDelegate.yMax != yMax ||
         oldDelegate.horizontalLines != horizontalLines ||
         oldDelegate.lineColor != lineColor ||
+        oldDelegate.gridColor != gridColor ||
         !listEquals(oldDelegate.lineValues, lineValues);
   }
 }
@@ -679,7 +687,7 @@ class _LegendRow extends StatelessWidget {
         Text(
           item.value,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.repairsCostMuted,
+                color: AppSurfaceColors.mutedText(context),
               ),
         ),
       ],

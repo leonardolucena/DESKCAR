@@ -12,7 +12,7 @@ import 'package:deskcar/features/repairs/domain/entities/repair_category.dart';
 import 'package:deskcar/features/repairs/domain/entities/service_record_entity.dart';
 import 'package:deskcar/features/repairs/domain/repositories/service_record_repository.dart';
 import 'package:deskcar/features/repairs/presentation/widgets/add_service_form_field.dart';
-import 'package:deskcar/theme/app_colors.dart';
+import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -254,9 +254,8 @@ class _AddServicePageState extends State<AddServicePage> {
     final commentLength = _commentController.text.characters.length;
 
     return Scaffold(
-      backgroundColor: AppColors.formScreenBackground,
+      backgroundColor: AppSurfaceColors.formScreenBackground(context),
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundCardLight,
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
         leading: IconButton(
@@ -335,8 +334,9 @@ class _AddServicePageState extends State<AddServicePage> {
                     ),
                     Switch(
                       value: _includeAccessoryCosts,
-                      activeThumbColor: AppColors.backgroundCardLight,
-                      activeTrackColor: AppColors.bottomNavActiveLight,
+                      activeThumbColor: AppSurfaceColors.cardBackground(context),
+                      activeTrackColor:
+                          AppSurfaceColors.switchActiveTrack(context),
                       onChanged: (value) {
                         setState(() => _includeAccessoryCosts = value);
                       },
@@ -351,7 +351,7 @@ class _AddServicePageState extends State<AddServicePage> {
                 Text(
                   'Custos',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppColors.formCostsHeader,
+                        color: AppSurfaceColors.formCostsHeader(context),
                         fontWeight: FontWeight.w600,
                       ),
                 ),
@@ -359,21 +359,21 @@ class _AddServicePageState extends State<AddServicePage> {
                 AddServiceFormField(
                   controller: _partsController,
                   label: 'Peças',
-                  fillColor: AppColors.formCostFieldFill,
+                  fillColor: AppSurfaceColors.formCostFieldFill(context),
                   inputFormatters: _currencyInputFormatters,
                 ),
                 SizedBox(height: AppSizes.spacingMd),
                 AddServiceFormField(
                   controller: _laborController,
                   label: 'Trabalho',
-                  fillColor: AppColors.formCostFieldFill,
+                  fillColor: AppSurfaceColors.formCostFieldFill(context),
                   inputFormatters: _currencyInputFormatters,
                 ),
                 SizedBox(height: AppSizes.spacingMd),
                 AddServiceFormField(
                   controller: _totalController,
                   label: 'Total',
-                  fillColor: AppColors.formCostFieldFill,
+                  fillColor: AppSurfaceColors.formCostFieldFill(context),
                   inputFormatters: _currencyInputFormatters,
                 ),
                 SizedBox(height: AppSizes.spacingLg),
@@ -395,7 +395,7 @@ class _AddServicePageState extends State<AddServicePage> {
                 AddServiceFormField(
                   controller: _supplierCodesController,
                   hintText: 'Códigos de fornecedor',
-                  fillColor: AppColors.formInfoFieldFill,
+                  fillColor: AppSurfaceColors.formInfoFieldFill(context),
                   maxLength: _maxSupplierCodesLength,
                   counterText:
                       '$supplierCodesLength/$_maxSupplierCodesLength',
@@ -405,7 +405,7 @@ class _AddServicePageState extends State<AddServicePage> {
                 AddServiceFormField(
                   controller: _commentController,
                   hintText: 'Comente',
-                  fillColor: AppColors.formInfoFieldFill,
+                  fillColor: AppSurfaceColors.formInfoFieldFill(context),
                   maxLength: _maxCommentLength,
                   minLines: 4,
                   counterText: '$commentLength/$_maxCommentLength',
@@ -441,7 +441,7 @@ class _FormCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(AppSizes.cardPadding),
       decoration: BoxDecoration(
-        color: AppColors.backgroundCardLight,
+        color: AppSurfaceColors.cardBackground(context),
         borderRadius: BorderRadius.circular(AppSizes.cardRadius),
       ),
       child: Column(

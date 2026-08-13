@@ -1,5 +1,5 @@
 import 'package:deskcar/core/responsive/app_sizes.dart';
-import 'package:deskcar/theme/app_colors.dart';
+import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -41,7 +41,8 @@ class AddServiceFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveFillColor = fillColor ?? AppColors.formFieldFill;
+    final effectiveFillColor =
+        fillColor ?? AppSurfaceColors.formFieldFill(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -53,7 +54,9 @@ class AddServiceFormField extends StatelessWidget {
               top: Radius.circular(AppSizes.borderRadius),
             ),
             border: Border(
-              bottom: BorderSide(color: AppColors.formFieldBorder),
+              bottom: BorderSide(
+                color: AppSurfaceColors.formFieldBorder(context),
+              ),
             ),
           ),
           child: TextField(
@@ -90,13 +93,13 @@ class AddServiceFormField extends StatelessWidget {
               ),
               suffixText: suffixText,
               suffixStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.repairsCostMuted,
+                    color: AppSurfaceColors.mutedText(context),
                   ),
               suffixIcon: suffixIcon == null
                   ? null
                   : Icon(
                       suffixIcon,
-                      color: AppColors.repairsCostMuted,
+                      color: AppSurfaceColors.mutedText(context),
                     ),
             ),
           ),
@@ -108,7 +111,7 @@ class AddServiceFormField extends StatelessWidget {
             child: Text(
               counterText!,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.repairsCostMuted,
+                    color: AppSurfaceColors.mutedText(context),
                   ),
             ),
           ),

@@ -11,6 +11,7 @@ import 'package:deskcar/features/reports/presentation/widgets/reports_chart_card
 import 'package:deskcar/features/reports/presentation/widgets/reports_filter_chips.dart';
 import 'package:deskcar/features/reports/presentation/widgets/reports_summary_section.dart';
 import 'package:deskcar/theme/app_colors.dart';
+import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,7 +21,7 @@ class ReportsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundCardLight,
+      backgroundColor: AppSurfaceColors.cardBackground(context),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
@@ -180,19 +181,20 @@ class _ReportsCharts extends StatelessWidget {
             ReportsLegendItem(
               label: 'Reparos',
               color: AppColors.reportsRepairsRed,
-              backgroundColor: AppColors.reportsLegendRepairsBg,
+              backgroundColor: AppSurfaceColors.reportsLegendRepairsBg(context),
               value: AppCurrencyFormatter.formatAmount(summary.repairsTotal),
             ),
             ReportsLegendItem(
               label: 'Papéis',
               color: AppColors.reportsPapersGreen,
-              backgroundColor: AppColors.reportsLegendPapersBg,
+              backgroundColor: AppSurfaceColors.reportsLegendPapersBg(context),
               value: AppCurrencyFormatter.formatAmount(summary.papersTotal),
             ),
             ReportsLegendItem(
               label: 'Acessórios',
               color: AppColors.reportsAccessoriesPurple,
-              backgroundColor: AppColors.reportsLegendAccessoriesBg,
+              backgroundColor:
+                  AppSurfaceColors.reportsLegendAccessoriesBg(context),
               value: AppCurrencyFormatter.formatAmount(summary.accessoriesTotal),
             ),
           ],
@@ -215,7 +217,7 @@ class _ReportsCharts extends StatelessWidget {
             ReportsLegendItem(
               label: 'Quilometragem',
               color: AppColors.repairsMileageBlue,
-              backgroundColor: AppColors.reportsLegendMileageBg,
+              backgroundColor: AppSurfaceColors.reportsLegendMileageBg(context),
               value: _mileageLegendValue(data),
             ),
           ],

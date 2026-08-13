@@ -1,6 +1,6 @@
 import 'package:deskcar/core/responsive/app_sizes.dart';
 import 'package:deskcar/features/repairs/domain/entities/repair_category.dart';
-import 'package:deskcar/theme/app_colors.dart';
+import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -57,7 +57,7 @@ class _SelectServiceBottomSheetState extends State<SelectServiceBottomSheet> {
       child: Container(
         height: sheetHeight,
         decoration: BoxDecoration(
-          color: AppColors.backgroundCardLight,
+          color: AppSurfaceColors.cardBackground(context),
           borderRadius: const BorderRadius.vertical(
             top: Radius.circular(sheetTopRadius),
           ),
@@ -69,7 +69,7 @@ class _SelectServiceBottomSheetState extends State<SelectServiceBottomSheet> {
               width: 10.w,
               height: 0.5.h,
               decoration: BoxDecoration(
-                color: AppColors.repairsCostMuted,
+                color: AppSurfaceColors.mutedText(context),
                 borderRadius: BorderRadius.circular(AppSizes.borderRadius),
               ),
             ),
@@ -98,7 +98,7 @@ class _SelectServiceBottomSheetState extends State<SelectServiceBottomSheet> {
                       hintText: 'Pesquisar...',
                       prefixIcon: const Icon(Icons.search),
                       filled: true,
-                      fillColor: AppColors.backgroundLight,
+                      fillColor: AppSurfaceColors.searchFieldFill(context),
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: AppSizes.inputPaddingH,
                         vertical: AppSizes.inputPaddingV,
@@ -117,7 +117,7 @@ class _SelectServiceBottomSheetState extends State<SelectServiceBottomSheet> {
                         borderRadius:
                             BorderRadius.circular(AppSizes.borderRadius),
                         borderSide: BorderSide(
-                          color: AppColors.bottomNavActiveLight,
+                          color: AppSurfaceColors.inputFocusBorder(context),
                           width: 1.5,
                         ),
                       ),
@@ -134,7 +134,7 @@ class _SelectServiceBottomSheetState extends State<SelectServiceBottomSheet> {
                         'Nenhum serviço encontrado.',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: AppColors.repairsCostMuted,
+                              color: AppSurfaceColors.mutedText(context),
                             ),
                       ),
                     )

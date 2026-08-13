@@ -1,5 +1,6 @@
 import 'package:deskcar/components/app_main_shell.dart';
 import 'package:deskcar/core/di/injection.dart';
+import 'package:deskcar/core/router/app_page_transitions.dart';
 import 'package:deskcar/core/router/app_routes.dart';
 import 'package:deskcar/features/garage/presentation/cubit/garage_cubit.dart';
 import 'package:deskcar/features/garage/presentation/pages/add_vehicle_page.dart';
@@ -33,13 +34,15 @@ class AppRouter {
         routes: [
           GoRoute(
             path: AppRoutes.settings,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: SettingsPage(),
+            pageBuilder: (context, state) => AppPageTransitions.tab(
+              key: state.pageKey,
+              child: const SettingsPage(),
             ),
           ),
           GoRoute(
             path: AppRoutes.repairs,
-            pageBuilder: (context, state) => NoTransitionPage(
+            pageBuilder: (context, state) => AppPageTransitions.tab(
+              key: state.pageKey,
               child: BlocProvider(
                 create: (_) => getIt<RepairsCubit>()..load(),
                 child: const RepairsPage(),
@@ -48,7 +51,8 @@ class AppRouter {
           ),
           GoRoute(
             path: AppRoutes.papers,
-            pageBuilder: (context, state) => NoTransitionPage(
+            pageBuilder: (context, state) => AppPageTransitions.tab(
+              key: state.pageKey,
               child: BlocProvider(
                 create: (_) => getIt<PapersCubit>()..load(),
                 child: const PapersPage(),
@@ -57,13 +61,15 @@ class AppRouter {
           ),
           GoRoute(
             path: AppRoutes.reminders,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: RemindersPage(),
+            pageBuilder: (context, state) => AppPageTransitions.tab(
+              key: state.pageKey,
+              child: const RemindersPage(),
             ),
           ),
           GoRoute(
             path: AppRoutes.reports,
-            pageBuilder: (context, state) => NoTransitionPage(
+            pageBuilder: (context, state) => AppPageTransitions.tab(
+              key: state.pageKey,
               child: BlocProvider(
                 create: (_) => getIt<ReportsCubit>()..load(),
                 child: const ReportsPage(),
@@ -74,50 +80,65 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.addService,
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final recordId = state.uri.queryParameters['id'];
           final categoryName =
               state.uri.queryParameters['category'] ?? RepairCategory.other.name;
           final category = RepairCategory.fromName(categoryName);
 
-          return AddServicePage(
-            category: category,
-            recordId: recordId,
+          return AppPageTransitions.modal(
+            key: state.pageKey,
+            child: AddServicePage(
+              category: category,
+              recordId: recordId,
+            ),
           );
         },
       ),
       GoRoute(
         path: AppRoutes.addDocument,
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final recordId = state.uri.queryParameters['id'];
           final categoryName =
               state.uri.queryParameters['category'] ??
                   PaperDocumentCategory.other.name;
           final category = PaperDocumentCategory.fromName(categoryName);
 
-          return AddDocumentPage(
-            category: category,
-            recordId: recordId,
+          return AppPageTransitions.modal(
+            key: state.pageKey,
+            child: AddDocumentPage(
+              category: category,
+              recordId: recordId,
+            ),
           );
         },
       ),
       GoRoute(
         path: AppRoutes.addVehicle,
-        builder: (context, state) => const AddVehiclePage(),
+        pageBuilder: (context, state) => AppPageTransitions.modal(
+          key: state.pageKey,
+          child: const AddVehiclePage(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.garage,
-        builder: (context, state) => BlocProvider(
-          create: (_) => getIt<GarageCubit>()..load(),
-          child: const GaragePage(),
+        pageBuilder: (context, state) => AppPageTransitions.push(
+          key: state.pageKey,
+          child: BlocProvider(
+            create: (_) => getIt<GarageCubit>()..load(),
+            child: const GaragePage(),
+          ),
         ),
       ),
       GoRoute(
         path: AppRoutes.carDetail,
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final vehicleId = state.pathParameters['id']!;
 
-          return CarDetailPage(vehicleId: vehicleId);
+          return AppPageTransitions.push(
+            key: state.pageKey,
+            child: CarDetailPage(vehicleId: vehicleId),
+          );
         },
       ),
     ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:deskcar/core/responsive/app_sizes.dart';
 import 'package:deskcar/theme/app_colors.dart';
+import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 enum AppSnackbarType {
@@ -26,7 +27,7 @@ abstract final class AppSnackbar {
     }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final colors = _resolveColors(type, isDark);
+    final colors = _resolveColors(context, type, isDark);
     final icon = _resolveIcon(type);
 
     messenger
@@ -81,12 +82,16 @@ abstract final class AppSnackbar {
     };
   }
 
-  static _SnackbarColors _resolveColors(AppSnackbarType type, bool isDark) {
+  static _SnackbarColors _resolveColors(
+    BuildContext context,
+    AppSnackbarType type,
+    bool isDark,
+  ) {
     return switch (type) {
-      AppSnackbarType.info => const _SnackbarColors(
-          background: AppColors.backgroundCardLight,
-          border: AppColors.listScreenBorderLight,
-          foreground: AppColors.primaryTextColorLight,
+      AppSnackbarType.info => _SnackbarColors(
+          background: AppSurfaceColors.cardBackground(context),
+          border: AppSurfaceColors.cardBorder(context),
+          foreground: Theme.of(context).colorScheme.onSurface,
         ),
       AppSnackbarType.success => _SnackbarColors(
           background: isDark

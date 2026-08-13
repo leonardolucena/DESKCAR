@@ -11,6 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:deskcar/core/database/app_database.dart' as _i929;
 import 'package:deskcar/core/di/app_module.dart' as _i122;
+import 'package:deskcar/core/preferences/theme_preferences.dart' as _i175;
 import 'package:deskcar/core/router/app_router.dart' as _i650;
 import 'package:deskcar/core/storage/app_paths.dart' as _i46;
 import 'package:deskcar/features/garage/data/repositories/reminder_repository_impl.dart'
@@ -37,8 +38,11 @@ import 'package:deskcar/features/reports/domain/repositories/reports_repository.
     as _i1022;
 import 'package:deskcar/features/reports/presentation/cubit/reports_cubit.dart'
     as _i832;
+import 'package:deskcar/features/settings/presentation/cubit/theme_cubit.dart'
+    as _i36;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -48,13 +52,23 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
+    await gh.lazySingletonAsync<_i460.SharedPreferences>(
+      () => appModule.sharedPreferences(),
+      preResolve: true,
+    );
     await gh.lazySingletonAsync<_i46.AppPaths>(
       () => appModule.appPaths(),
       preResolve: true,
     );
     gh.lazySingleton<_i650.AppRouter>(() => _i650.AppRouter());
+    gh.lazySingleton<_i175.ThemePreferences>(
+      () => _i175.ThemePreferences(gh<_i460.SharedPreferences>()),
+    );
     gh.lazySingleton<_i929.AppDatabase>(
       () => appModule.appDatabase(gh<_i46.AppPaths>()),
+    );
+    gh.factory<_i36.ThemeCubit>(
+      () => _i36.ThemeCubit(gh<_i175.ThemePreferences>()),
     );
     gh.lazySingleton<_i624.ReminderRepository>(
       () => _i127.ReminderRepositoryImpl(gh<_i929.AppDatabase>()),

@@ -1,3 +1,4 @@
+import 'package:deskcar/components/paginated_staggered_list_view.dart';
 import 'package:deskcar/components/states/app_error_state.dart';
 import 'package:deskcar/components/states/app_loading_state.dart';
 import 'package:deskcar/core/responsive/app_sizes.dart';
@@ -8,7 +9,7 @@ import 'package:deskcar/features/papers/presentation/widgets/paper_record_list_t
 import 'package:deskcar/features/papers/presentation/widgets/papers_app_bar.dart';
 import 'package:deskcar/features/papers/presentation/widgets/select_document_bottom_sheet.dart';
 import 'package:deskcar/features/repairs/domain/entities/service_record_entity.dart';
-import 'package:deskcar/theme/app_colors.dart';
+import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -76,7 +77,7 @@ class _PapersPageState extends State<PapersPage> {
             state.status == PapersStatus.loaded && state.records.isNotEmpty;
 
         return Scaffold(
-          backgroundColor: AppColors.backgroundCardLight,
+          backgroundColor: AppSurfaceColors.cardBackground(context),
           appBar: hasRecords
               ? PapersAppBar(
                   isSearching: _isSearching,
@@ -99,11 +100,15 @@ class _PapersPageState extends State<PapersPage> {
                 filteredRecords: _filterRecords(state.records),
                 isSearching: _isSearching,
                 searchQuery: _searchQuery,
+                listAnimationKey: Object.hash(
+                  Object.hashAll(state.records.map((record) => record.id)),
+                  _searchQuery,
+                ),
               ),
           },
           floatingActionButton: FloatingActionButton(
-            backgroundColor: AppColors.repairsFabBackground,
-            foregroundColor: AppColors.backgroundCardLight,
+            backgroundColor: AppSurfaceColors.fabBackground(context),
+            foregroundColor: AppSurfaceColors.fabForeground(context),
             onPressed: () => _openNewDocumentFlow(context),
             child: const Icon(Icons.note_add_outlined),
           ),
@@ -119,12 +124,14 @@ class _PapersList extends StatelessWidget {
     required this.filteredRecords,
     required this.isSearching,
     required this.searchQuery,
+    required this.listAnimationKey,
   });
 
   final List<ServiceRecordEntity> allRecords;
   final List<ServiceRecordEntity> filteredRecords;
   final bool isSearching;
   final String searchQuery;
+  final int listAnimationKey;
 
   @override
   Widget build(BuildContext context) {
@@ -140,24 +147,28 @@ class _PapersList extends StatelessWidget {
             'Nenhum documento encontrado para "$searchQuery".',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.repairsCostMuted,
+                  color: AppSurfaceColors.mutedText(context),
                 ),
           ),
         ),
       );
     }
 
-    return ListView.separated(
+    return AppPaginatedStaggeredListView(
       itemCount: filteredRecords.length,
+      listAnimationKey: listAnimationKey,
+      animateItems: !isSearching,
+      itemKeyBuilder: (index) => filteredRecords[index].id,
       separatorBuilder: (context, index) => Divider(
         height: 1,
         thickness: 1,
-        color: AppColors.repairsListDivider,
+        color: AppSurfaceColors.listDivider(context),
         indent: AppSizes.cardPadding,
         endIndent: AppSizes.cardPadding,
       ),
       itemBuilder: (context, index) {
         final record = filteredRecords[index];
+
         return PaperRecordListTile(
           record: record,
           onTap: () => context.push(AppRoutes.editDocumentPath(record.id)),
