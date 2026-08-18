@@ -155,30 +155,31 @@ abstract final class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: surfaceColor,
+        floatingLabelBehavior: FloatingLabelBehavior.never,
         errorStyle: AppTextTheme.error,
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppSizes.inputBorderRadius),
           borderSide: BorderSide(
             color: borderColor,
             width: highContrast ? 2 : 1,
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppSizes.inputBorderRadius),
           borderSide: BorderSide(
             color: primaryColor,
             width: highContrast ? 2.5 : 2,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppSizes.inputBorderRadius),
           borderSide: BorderSide(
             color: AppColors.borderError,
             width: highContrast ? 2.5 : 1,
           ),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppSizes.inputBorderRadius),
           borderSide: BorderSide(
             color: AppColors.borderError,
             width: highContrast ? 2 : 1,

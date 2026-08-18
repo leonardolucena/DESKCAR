@@ -304,18 +304,18 @@ class _AddServicePageState extends State<AddServicePage> {
                 SizedBox(height: AppSizes.spacingLg),
                 AddServiceFormField(
                   controller: _nameController,
-                  hintText: 'Insira o nome do serviço',
+                  label: 'Insira o nome do serviço',
                   maxLength: _maxNameLength,
                   counterText: '$nameLength/$_maxNameLength',
                   onChanged: (_) => setState(() {}),
                 ),
-                SizedBox(height: AppSizes.spacingMd),
+                SizedBox(height: AppSizes.formFieldSpacing),
                 AddServiceFormField(
                   controller: _mileageController,
                   label: 'Quilometragem',
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
-                SizedBox(height: AppSizes.spacingMd),
+                SizedBox(height: AppSizes.formFieldSpacing),
                 AddServiceFormField(
                   label: 'Encontro',
                   readOnly: true,
@@ -355,21 +355,21 @@ class _AddServicePageState extends State<AddServicePage> {
                         fontWeight: FontWeight.w600,
                       ),
                 ),
-                SizedBox(height: AppSizes.spacingMd),
+                SizedBox(height: AppSizes.formFieldSpacing),
                 AddServiceFormField(
                   controller: _partsController,
                   label: 'Peças',
                   fillColor: AppSurfaceColors.formCostFieldFill(context),
                   inputFormatters: _currencyInputFormatters,
                 ),
-                SizedBox(height: AppSizes.spacingMd),
+                SizedBox(height: AppSizes.formFieldSpacing),
                 AddServiceFormField(
                   controller: _laborController,
                   label: 'Trabalho',
                   fillColor: AppSurfaceColors.formCostFieldFill(context),
                   inputFormatters: _currencyInputFormatters,
                 ),
-                SizedBox(height: AppSizes.spacingMd),
+                SizedBox(height: AppSizes.formFieldSpacing),
                 AddServiceFormField(
                   controller: _totalController,
                   label: 'Total',
@@ -394,17 +394,17 @@ class _AddServicePageState extends State<AddServicePage> {
               children: [
                 AddServiceFormField(
                   controller: _supplierCodesController,
-                  hintText: 'Códigos de fornecedor',
+                  label: 'Códigos de fornecedor',
                   fillColor: AppSurfaceColors.formInfoFieldFill(context),
                   maxLength: _maxSupplierCodesLength,
                   counterText:
                       '$supplierCodesLength/$_maxSupplierCodesLength',
                   onChanged: (_) => setState(() {}),
                 ),
-                SizedBox(height: AppSizes.spacingMd),
+                SizedBox(height: AppSizes.formFieldSpacing),
                 AddServiceFormField(
                   controller: _commentController,
-                  hintText: 'Comente',
+                  label: 'Comente',
                   fillColor: AppSurfaceColors.formInfoFieldFill(context),
                   maxLength: _maxCommentLength,
                   minLines: 4,

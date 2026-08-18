@@ -18,6 +18,7 @@ abstract final class AppSizes {
   static double get iconLg => 8.w;
   static const double drawerAppBarIconButtonWidth = 44;
   static const double appBarBottomRadius = 16;
+  static const double inputBorderRadius = 12;
   static double get drawerAppBarLeadingWidth =>
       drawerAppBarIconButtonWidth * 2;
   static double get drawerAppBarLeadingWidthCompact =>
@@ -27,6 +28,9 @@ abstract final class AppSizes {
   static double get errorAreaHeightCompact => 2.h;
   static double get inputPaddingH => 4.w;
   static double get inputPaddingV => 1.8.h;
+  static double get formFieldLabelGap => spacingXs / 2;
+  static double get formFieldSpacing => spacingSm;
+  static double get formInputPaddingV => 1.2.h;
   static double get badgePaddingH => 2.5.w;
   static double get badgePaddingV => 0.6.h;
   static double get stateMinHeight => 30.h;

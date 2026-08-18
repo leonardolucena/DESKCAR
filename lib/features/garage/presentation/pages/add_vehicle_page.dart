@@ -268,14 +268,14 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
                   counterText: '$nameLength/$_maxNameLength',
                   onChanged: (_) => setState(() {}),
                 ),
-                SizedBox(height: AppSizes.spacingMd),
+                SizedBox(height: AppSizes.formFieldSpacing),
                 AddServiceFormField(
                   label: 'Data de compra do veículo',
                   readOnly: true,
                   onTap: _pickPurchaseDate,
                   controller: _purchaseDateController,
                 ),
-                SizedBox(height: AppSizes.spacingMd),
+                SizedBox(height: AppSizes.formFieldSpacing),
                 AddServiceFormField(
                   controller: _plateController,
                   label: 'Placa do veículo',
@@ -333,21 +333,21 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
                 ),
                 SizedBox(height: AppSizes.spacingLg),
                 _SectionTitle(text: 'Intervalos'),
-                SizedBox(height: AppSizes.spacingMd),
+                SizedBox(height: AppSizes.formFieldSpacing),
                 AddServiceFormField(
                   label: 'Selecione o intervalo',
                   readOnly: true,
                   onTap: _pickIntervalCategory,
                   controller: _intervalController,
                 ),
-                SizedBox(height: AppSizes.spacingMd),
+                SizedBox(height: AppSizes.formFieldSpacing),
                 AddServiceFormField(
                   controller: _dateIntervalController,
                   label: 'Intervalo por data',
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   suffixText: 'meses',
                 ),
-                SizedBox(height: AppSizes.spacingMd),
+                SizedBox(height: AppSizes.formFieldSpacing),
                 AddServiceFormField(
                   controller: _mileageIntervalController,
                   label: 'Intervalo por quilometragem',
@@ -361,7 +361,7 @@ class _AddVehiclePageState extends State<AddVehiclePage> {
               children: [
                 AddServiceFormField(
                   controller: _commentController,
-                  hintText: 'Comente',
+                  label: 'Comente',
                   fillColor: AppSurfaceColors.formInfoFieldFill(context),
                   maxLength: _maxCommentLength,
                   minLines: 4,

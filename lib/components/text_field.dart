@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:deskcar/components/app_input_decoration.dart';
 import 'package:deskcar/core/responsive/app_sizes.dart';
-import 'package:deskcar/theme/app_colors.dart';
-import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:deskcar/theme/app_text_theme.dart';
+import 'package:flutter/material.dart';
 
 class AppTextField extends StatelessWidget {
   const AppTextField({
@@ -27,6 +26,7 @@ class AppTextField extends StatelessWidget {
     this.minLines,
     this.reserveErrorSpace = true,
     this.maintainBorderOnFocus = false,
+    this.fillColor,
   });
 
   final TextEditingController? controller;
@@ -37,6 +37,7 @@ class AppTextField extends StatelessWidget {
   final int? minLines;
   final bool reserveErrorSpace;
   final bool maintainBorderOnFocus;
+  final Color? fillColor;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final TextInputType? keyboardType;
@@ -51,24 +52,23 @@ class AppTextField extends StatelessWidget {
   final bool compact;
 
   bool get _hasError => errorText != null && errorText!.isNotEmpty;
-  bool get _showLabel => label.isNotEmpty;
+  bool get _showLabel => _effectiveLabel.isNotEmpty;
   bool get _isMultiline => maxLines > 1;
+
+  String get _effectiveLabel {
+    if (label.trim().isNotEmpty) {
+      return label;
+    }
+
+    if (hintText != null && hintText!.trim().isNotEmpty) {
+      return hintText!.trim();
+    }
+
+    return '';
+  }
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final fillColor = AppSurfaceColors.cardBackground(context);
-    final enabledBorderColor = AppSurfaceColors.inputBorder(context);
-    final labelColor = colorScheme.onSurface;
-    final borderColor = _hasError ? AppColors.borderError : enabledBorderColor;
-    final focusedBorderColor =
-        _hasError ? AppColors.borderError : colorScheme.primary;
-
-    final border = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-      borderSide: BorderSide(color: borderColor),
-    );
-
     final suffix = suffixIcon == null
         ? null
         : GestureDetector(
@@ -79,17 +79,35 @@ class AppTextField extends StatelessWidget {
               child: Icon(
                 suffixIcon,
                 size: AppSizes.inputSuffixIconSize,
-                color: enabled
-                    ? colorScheme.onSurface.withValues(alpha: 0.6)
-                    : colorScheme.onSurface.withValues(alpha: 0.3),
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface
+                    .withValues(alpha: enabled ? 0.6 : 0.3),
               ),
             ),
           );
+
+    final decoration = AppInputDecoration.outlined(
+      context: context,
+      fillColor: fillColor,
+      hasError: _hasError,
+      suffixIcon: suffix,
+    );
+
+    final fieldLabel = AppInputDecoration.buildLabel(
+      context,
+      _showLabel ? _effectiveLabel : null,
+      hasError: _hasError,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (fieldLabel != null) ...[
+          fieldLabel,
+          SizedBox(height: AppSizes.formFieldLabelGap),
+        ],
         TextField(
           controller: controller,
           focusNode: focusNode,
@@ -103,38 +121,11 @@ class AppTextField extends StatelessWidget {
           style: Theme.of(context).textTheme.bodyLarge,
           onChanged: onChanged,
           onSubmitted: onSubmitted,
-          decoration: InputDecoration(
-            labelText: _showLabel ? label : null,
-            hintText: hintText,
-            floatingLabelBehavior: _showLabel
-                ? (_isMultiline
-                    ? FloatingLabelBehavior.always
-                    : FloatingLabelBehavior.auto)
-                : FloatingLabelBehavior.never,
-            alignLabelWithHint: _isMultiline,
-            filled: true,
-            fillColor: enabled ? fillColor : fillColor.withValues(alpha: 0.5),
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: AppSizes.inputPaddingH,
-              vertical: AppSizes.inputPaddingV,
-            ),
-            labelStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: labelColor,
-                ),
-            floatingLabelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: _hasError ? AppColors.borderError : labelColor,
-                ),
-            enabledBorder: border,
-            focusedBorder: maintainBorderOnFocus
-                ? border
-                : OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-                    borderSide: BorderSide(color: focusedBorderColor, width: 2),
-                  ),
-            disabledBorder: border,
-            border: border,
-            suffixIcon: suffix,
-          ),
+          decoration: maintainBorderOnFocus
+              ? decoration.copyWith(
+                  focusedBorder: decoration.enabledBorder,
+                )
+              : decoration,
         ),
         if (helperText != null && !_hasError) ...[
           SizedBox(height: AppSizes.spacingXs / 2),

@@ -291,7 +291,7 @@ class _AddDocumentPageState extends State<AddDocumentPage> {
                             color: _category.iconColor,
                           ),
                         ),
-                        SizedBox(height: AppSizes.spacingMd),
+                        SizedBox(height: AppSizes.formFieldSpacing),
                         Center(
                           child: AppOutlineButton(
                             label: 'ALTERAR IMAGEM...',
@@ -309,18 +309,18 @@ class _AddDocumentPageState extends State<AddDocumentPage> {
                     SizedBox(height: AppSizes.spacingLg),
                     AddServiceFormField(
                       controller: _nameController,
-                      hintText: 'Insira o nome do documento',
+                      label: 'Insira o nome do documento',
                       maxLength: _maxNameLength,
                       counterText: '$nameLength/$_maxNameLength',
                       onChanged: (_) => setState(() {}),
                     ),
-                    SizedBox(height: AppSizes.spacingMd),
+                    SizedBox(height: AppSizes.formFieldSpacing),
                     AddServiceFormField(
                       controller: _mileageController,
                       label: 'Quilometragem',
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     ),
-                    SizedBox(height: AppSizes.spacingMd),
+                    SizedBox(height: AppSizes.formFieldSpacing),
                     AddServiceFormField(
                       label: 'Encontro',
                       readOnly: true,
@@ -328,7 +328,7 @@ class _AddDocumentPageState extends State<AddDocumentPage> {
                       controller: _dateController,
                       suffixIcon: Icons.calendar_today_outlined,
                     ),
-                    SizedBox(height: AppSizes.spacingMd),
+                    SizedBox(height: AppSizes.formFieldSpacing),
                     AddServiceFormField(
                       controller: _totalController,
                       label: 'Custo total',
