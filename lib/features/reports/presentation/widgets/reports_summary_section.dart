@@ -28,7 +28,7 @@ class ReportsSummarySection extends StatelessWidget {
               child: _SummaryCard(
                 label: 'Acessórios',
                 amount: accessoriesTotal,
-                valueColor: AppColors.reportsAccessoriesPurple,
+                valueColor: AppSurfaceColors.reportsAccessoriesAccent(context),
               ),
             ),
             SizedBox(width: AppSizes.spacingSm),
@@ -41,7 +41,7 @@ class ReportsSummarySection extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: AppSizes.spacingSm),
+        SizedBox(height: AppSizes.spacingXs),
         Row(
           children: [
             Expanded(
@@ -56,7 +56,7 @@ class ReportsSummarySection extends StatelessWidget {
               child: _SummaryCard(
                 label: 'Total',
                 amount: total,
-                valueColor: AppColors.reportsTotalBlue,
+                valueColor: AppSurfaceColors.reportsTotalAccent(context),
               ),
             ),
           ],
@@ -85,8 +85,8 @@ class _SummaryCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
-        horizontal: AppSizes.cardPadding,
-        vertical: 7,
+        horizontal: AppSizes.spacingSm,
+        vertical: 4,
       ),
       decoration: BoxDecoration(
         color: AppSurfaceColors.cardBackground(context),
@@ -105,14 +105,13 @@ class _SummaryCard extends StatelessWidget {
                 label,
                 textAlign: TextAlign.center,
                 maxLines: 1,
-                style: theme.titleMedium?.copyWith(
-                  fontSize: 20,
+                style: theme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
           ),
-          SizedBox(height: AppSizes.spacingSm),
+          SizedBox(height: AppSizes.spacingXs / 2),
           SizedBox(
             width: double.infinity,
             child: FittedBox(
@@ -122,8 +121,7 @@ class _SummaryCard extends StatelessWidget {
                 formattedAmount,
                 textAlign: TextAlign.center,
                 maxLines: 1,
-                style: theme.headlineSmall?.copyWith(
-                  fontSize: 16,
+                style: theme.labelLarge?.copyWith(
                   color: valueColor,
                   fontWeight: FontWeight.w800,
                 ),

@@ -24,7 +24,7 @@ abstract final class AppSurfaceColors {
   static Color screenBackground(BuildContext context) => _resolve(
         context,
         normalLight: AppColors.listScreenBackgroundLight,
-        normalDark: AppColors.backgroundCardDark,
+        normalDark: AppColors.backgroundDark,
         highContrastLight: AppColors.hcScreenBackgroundLight,
         highContrastDark: AppColors.hcScreenBackgroundDark,
       );
@@ -32,7 +32,7 @@ abstract final class AppSurfaceColors {
   static Color cardBackground(BuildContext context) => _resolve(
         context,
         normalLight: AppColors.backgroundCardLight,
-        normalDark: AppColors.backgroundCardDark,
+        normalDark: AppColors.backgroundDark,
         highContrastLight: AppColors.hcCardBackgroundLight,
         highContrastDark: AppColors.hcCardBackgroundDark,
       );
@@ -190,6 +190,14 @@ abstract final class AppSurfaceColors {
 
   static Color listDivider(BuildContext context) => cardBorder(context);
 
+  static Color timelineUpcomingBackground(BuildContext context) => _resolve(
+        context,
+        normalLight: AppColors.formInfoFieldFill,
+        normalDark: AppColors.formFieldFillDark,
+        highContrastLight: AppColors.hcCardBackgroundLight,
+        highContrastDark: AppColors.hcCardBackgroundDark,
+      );
+
   static Color chartBorder(BuildContext context) => _resolve(
         context,
         normalLight: AppColors.reportsChartBorder,
@@ -260,5 +268,29 @@ abstract final class AppSurfaceColors {
         normalDark: AppColors.reportsLegendMileageBgDark,
         highContrastLight: AppColors.hcCardBackgroundLight,
         highContrastDark: AppColors.hcCardBackgroundDark,
+      );
+
+  static Color reportsTotalAccent(BuildContext context) => _resolve(
+        context,
+        normalLight: AppColors.reportsTotalBlue,
+        normalDark: AppColors.reportsTotalBlueDark,
+        highContrastLight: AppColors.hcPrimaryTextLight,
+        highContrastDark: AppColors.hcPrimaryTextDark,
+      );
+
+  static Color reportsMileageAccent(BuildContext context) => _resolve(
+        context,
+        normalLight: AppColors.repairsMileageBlue,
+        normalDark: AppColors.reportsTotalBlueDark,
+        highContrastLight: AppColors.hcPrimaryTextLight,
+        highContrastDark: AppColors.hcPrimaryTextDark,
+      );
+
+  static Color reportsAccessoriesAccent(BuildContext context) => _resolve(
+        context,
+        normalLight: AppColors.reportsAccessoriesPurple,
+        normalDark: AppColors.reportsAccessoriesPurpleDark,
+        highContrastLight: AppColors.hcPrimaryTextLight,
+        highContrastDark: AppColors.hcPrimaryTextDark,
       );
 }

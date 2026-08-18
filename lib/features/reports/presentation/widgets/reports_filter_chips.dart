@@ -42,10 +42,6 @@ class ReportsFilterChips extends StatelessWidget {
               value: VehicleType.motorcycle,
               label: 'moto',
             ),
-            AppSegmentedControlSegment(
-              value: VehicleType.other,
-              label: 'outra',
-            ),
           ],
         ),
         if (vehicles.isNotEmpty) ...[

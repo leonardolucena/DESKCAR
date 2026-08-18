@@ -1,5 +1,6 @@
 import 'package:deskcar/components/app_bottom_nav_bar.dart';
 import 'package:deskcar/core/navigation/app_bottom_nav_destination.dart';
+import 'package:deskcar/features/repairs/presentation/utils/open_new_repair_flow.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -32,6 +33,7 @@ class AppMainShell extends StatelessWidget {
 
             context.go(destination.route);
           },
+          onAddPressed: () => openNewRepairFlow(context),
         ),
       ],
     );

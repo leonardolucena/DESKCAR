@@ -21,6 +21,7 @@ void main() {
                 return Scaffold(
                   bottomNavigationBar: AppBottomNavBar(
                     current: selected,
+                    onAddPressed: () {},
                     onDestinationSelected: (destination) {
                       setState(() {
                         selected = destination;
@@ -40,6 +41,7 @@ void main() {
     expect(find.text('Relatórios'), findsOneWidget);
     expect(find.text('Configurações'), findsOneWidget);
     expect(find.text('Lembretes'), findsNothing);
+    expect(find.byIcon(Icons.add), findsOneWidget);
 
     await tester.tap(find.text('Configurações'));
     await tester.pump();

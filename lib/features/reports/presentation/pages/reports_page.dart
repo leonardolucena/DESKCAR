@@ -1,16 +1,11 @@
 import 'package:deskcar/components/states/app_error_state.dart';
 import 'package:deskcar/components/states/app_loading_state.dart';
 import 'package:deskcar/core/responsive/app_sizes.dart';
-import 'package:deskcar/core/utils/formatters.dart';
-import 'package:deskcar/features/reports/domain/entities/reports_data.dart';
-import 'package:deskcar/features/reports/domain/entities/reports_expense_bucket.dart';
-import 'package:deskcar/features/reports/domain/services/reports_aggregator.dart';
 import 'package:deskcar/features/reports/presentation/cubit/reports_cubit.dart';
 import 'package:deskcar/features/reports/presentation/cubit/reports_state.dart';
-import 'package:deskcar/features/reports/presentation/widgets/reports_chart_card.dart';
+import 'package:deskcar/features/reports/presentation/widgets/reports_chart_tabs.dart';
 import 'package:deskcar/features/reports/presentation/widgets/reports_filter_chips.dart';
 import 'package:deskcar/features/reports/presentation/widgets/reports_summary_section.dart';
-import 'package:deskcar/theme/app_colors.dart';
 import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,12 +51,19 @@ class ReportsPage extends StatelessWidget {
   }
 }
 
-class _ReportsBody extends StatelessWidget {
+class _ReportsBody extends StatefulWidget {
   const _ReportsBody();
 
   @override
+  State<_ReportsBody> createState() => _ReportsBodyState();
+}
+
+class _ReportsBodyState extends State<_ReportsBody> {
+  ReportsChartTab _selectedChart = ReportsChartTab.allExpenses;
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return Padding(
       padding: EdgeInsets.all(AppSizes.cardPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -90,7 +92,7 @@ class _ReportsBody extends StatelessWidget {
                         context.read<ReportsCubit>().setSelectedVehicle,
                     onPeriodChanged: context.read<ReportsCubit>().setPeriod,
                   ),
-                  SizedBox(height: AppSizes.spacingMd),
+                  SizedBox(height: AppSizes.spacingSm),
                   ReportsSummarySection(
                     accessoriesTotal: summary.accessoriesTotal,
                     repairsTotal: summary.repairsTotal,
@@ -100,151 +102,25 @@ class _ReportsBody extends StatelessWidget {
               );
             },
           ),
-          SizedBox(height: AppSizes.spacingMd),
-          BlocBuilder<ReportsCubit, ReportsState>(
-            buildWhen: (previous, current) => previous.data != current.data,
-            builder: (context, state) {
-              return _ReportsCharts(data: state.data);
-            },
+          SizedBox(height: AppSizes.spacingSm),
+          ReportsChartTabBar(
+            selected: _selectedChart,
+            onSelected: (tab) => setState(() => _selectedChart = tab),
+          ),
+          SizedBox(height: AppSizes.spacingSm),
+          Expanded(
+            child: BlocBuilder<ReportsCubit, ReportsState>(
+              buildWhen: (previous, current) => previous.data != current.data,
+              builder: (context, state) {
+                return ReportsChartTabContent(
+                  tab: _selectedChart,
+                  data: state.data,
+                );
+              },
+            ),
           ),
         ],
       ),
     );
-  }
-}
-
-class _ReportsCharts extends StatelessWidget {
-  const _ReportsCharts({required this.data});
-
-  final ReportsData data;
-
-  @override
-  Widget build(BuildContext context) {
-    final monthLabels =
-        data.months.map(ReportsMonthFormatter.label).toList(growable: false);
-    final summary = data.summary;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ReportsChartCard(
-          title: 'Todas as despesas',
-          yAxisLabel: 'Custo, mil R\$',
-          xLabels: monthLabels,
-          yMax: data.expenseYMax,
-          lines: [
-            ReportsChartLine(
-              color: AppColors.reportsTotalBlue,
-              values: _expenseValues(data.totalExpensesByMonth),
-            ),
-          ],
-          legendItems: [
-            const ReportsLegendItem(label: 'Encontro'),
-            ReportsLegendItem(
-              label: 'Custos',
-              value: AppCurrencyFormatter.formatAmount(summary.total),
-            ),
-          ],
-        ),
-        SizedBox(height: AppSizes.spacingLg),
-        ReportsChartCard(
-          title: 'Despesas por categoria',
-          yAxisLabel: 'Custo, mil R\$',
-          xLabels: monthLabels,
-          yMax: data.expenseYMax,
-          compactXLabels: monthLabels.length > 8,
-          lines: [
-            ReportsChartLine(
-              color: AppColors.reportsRepairsRed,
-              values: _expenseValues(
-                data.bucketValues(ReportsExpenseBucket.repairs),
-              ),
-              showArea: false,
-            ),
-            ReportsChartLine(
-              color: AppColors.reportsPapersGreen,
-              values: _expenseValues(
-                data.bucketValues(ReportsExpenseBucket.papers),
-              ),
-              showArea: false,
-            ),
-            ReportsChartLine(
-              color: AppColors.reportsAccessoriesPurple,
-              values: _expenseValues(
-                data.bucketValues(ReportsExpenseBucket.accessories),
-              ),
-              showArea: false,
-            ),
-          ],
-          legendItems: [
-            const ReportsLegendItem(label: 'Encontro'),
-            ReportsLegendItem(
-              label: 'Reparos',
-              color: AppColors.reportsRepairsRed,
-              backgroundColor: AppSurfaceColors.reportsLegendRepairsBg(context),
-              value: AppCurrencyFormatter.formatAmount(summary.repairsTotal),
-            ),
-            ReportsLegendItem(
-              label: 'Papéis',
-              color: AppColors.reportsPapersGreen,
-              backgroundColor: AppSurfaceColors.reportsLegendPapersBg(context),
-              value: AppCurrencyFormatter.formatAmount(summary.papersTotal),
-            ),
-            ReportsLegendItem(
-              label: 'Acessórios',
-              color: AppColors.reportsAccessoriesPurple,
-              backgroundColor:
-                  AppSurfaceColors.reportsLegendAccessoriesBg(context),
-              value: AppCurrencyFormatter.formatAmount(summary.accessoriesTotal),
-            ),
-          ],
-        ),
-        SizedBox(height: AppSizes.spacingLg),
-        ReportsChartCard(
-          title: 'Quilometragem',
-          yAxisLabel: 'Quilometragem, km',
-          xLabels: monthLabels,
-          yMax: data.mileageYMax,
-          useKilometerLabels: true,
-          lines: [
-            ReportsChartLine(
-              color: AppColors.repairsMileageBlue,
-              values: data.mileageByMonth,
-            ),
-          ],
-          legendItems: [
-            const ReportsLegendItem(label: 'Encontro'),
-            ReportsLegendItem(
-              label: 'Quilometragem',
-              color: AppColors.repairsMileageBlue,
-              backgroundColor: AppSurfaceColors.reportsLegendMileageBg(context),
-              value: _mileageLegendValue(data),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  List<double> _expenseValues(List<double> values) {
-    return [
-      for (final value in values) value / 1000,
-    ];
-  }
-
-  String _mileageLegendValue(ReportsData data) {
-    if (data.mileageByMonth.isEmpty) {
-      return '---';
-    }
-
-    final lastMileage = data.mileageByMonth.lastWhere(
-      (value) => value > 0,
-      orElse: () => 0,
-    );
-    if (lastMileage <= 0) {
-      return '---';
-    }
-
-    return AppCurrencyFormatter.formatMileage(lastMileage, 'km');
   }
 }

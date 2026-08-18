@@ -57,7 +57,7 @@ class _FakeVehicleRepository implements VehicleRepository {
 }
 
 void main() {
-  testWidgets('ReportsPage shows filters, summary cards and charts', (
+  testWidgets('ReportsPage shows filters, summary cards and chart tabs', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
@@ -65,12 +65,15 @@ void main() {
         builder: (context, orientation, screenType) {
           return MaterialApp(
             theme: AppTheme.lightTheme,
-            home: BlocProvider(
-              create: (_) => ReportsCubit(
-                _FakeServiceRecordRepository(),
-                _FakeVehicleRepository(),
-              )..load(),
-              child: const ReportsPage(),
+            home: MediaQuery(
+              data: const MediaQueryData(size: Size(800, 1200)),
+              child: BlocProvider(
+                create: (_) => ReportsCubit(
+                  _FakeServiceRecordRepository(),
+                  _FakeVehicleRepository(),
+                )..load(),
+                child: const ReportsPage(),
+              ),
             ),
           );
         },
@@ -82,10 +85,19 @@ void main() {
     expect(find.text('Relatórios'), findsOneWidget);
     expect(find.text('carro'), findsOneWidget);
     expect(find.text('moto'), findsOneWidget);
-    expect(find.text('este ano'), findsOneWidget);
+    expect(find.text('outra'), findsNothing);
+    expect(find.text('Completo'), findsOneWidget);
     expect(find.text('Total'), findsOneWidget);
+    expect(find.text('Despesas'), findsOneWidget);
+    expect(find.text('Categorias'), findsOneWidget);
     expect(find.text('Todas as despesas'), findsOneWidget);
+    expect(find.text('Despesas por categoria'), findsNothing);
+    expect(find.text('Quilometragem'), findsOneWidget);
+
+    await tester.tap(find.text('Categorias'));
+    await tester.pumpAndSettle();
+
     expect(find.text('Despesas por categoria'), findsOneWidget);
-    expect(find.text('Quilometragem'), findsWidgets);
+    expect(find.text('Todas as despesas'), findsNothing);
   });
 }

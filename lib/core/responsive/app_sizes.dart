@@ -17,6 +17,7 @@ abstract final class AppSizes {
   static double get iconSm => 4.w;
   static double get iconLg => 8.w;
   static const double drawerAppBarIconButtonWidth = 44;
+  static const double appBarBottomRadius = 16;
   static double get drawerAppBarLeadingWidth =>
       drawerAppBarIconButtonWidth * 2;
   static double get drawerAppBarLeadingWidthCompact =>

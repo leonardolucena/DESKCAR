@@ -1,3 +1,4 @@
+import 'package:deskcar/core/responsive/app_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:deskcar/constants/app_assets.dart';
 import 'package:deskcar/theme/app_colors.dart';
@@ -127,6 +128,13 @@ abstract final class AppTheme {
         backgroundColor: surfaceColor,
         foregroundColor: onSurfaceColor,
         elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(AppSizes.appBarBottomRadius),
+          ),
+        ),
       ),
       cardTheme: CardThemeData(
         color: surfaceColor,

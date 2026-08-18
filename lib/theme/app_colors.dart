@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 abstract final class AppColors {
   // Dark
-  static const Color backgroundDark = Color(0xFF1E1E1E);
+  static const Color backgroundDark = Color(0xFF0D1327);
   static const Color backgroundCardDark = Color(0xFF2C2C2C);
   static const Color borderCardDark = Color(0xFF3F3F3F);
   static const Color primaryTextColorDark = Color(0xFFF5F5F5);
@@ -106,7 +106,7 @@ abstract final class AppColors {
   static const Color bottomNavActiveLight = Color(0xFF1E2A47);
   static const Color bottomNavInactiveLight = Color(0xFF9CA3AF);
 
-  static const Color bottomNavBackgroundDark = Color(0xFF2C2C2C);
+  static const Color bottomNavBackgroundDark = Color(0xFF1A1C24);
   static const Color bottomNavBorderDark = Color(0xFF3F3F3F);
   static const Color bottomNavActiveDark = Color(0xFFF5F5F5);
   static const Color bottomNavInactiveDark = Color(0xFF9CA3AF);
@@ -133,9 +133,11 @@ abstract final class AppColors {
 
   // Relatórios
   static const Color reportsAccessoriesPurple = Color(0xFF7B1FA2);
+  static const Color reportsAccessoriesPurpleDark = Color(0xFF895bda);
   static const Color reportsRepairsRed = Color(0xFFC62828);
   static const Color reportsPapersGreen = Color(0xFF2E7D32);
   static const Color reportsTotalBlue = Color(0xFF1E2A47);
+  static const Color reportsTotalBlueDark = Color(0xFFA8DADC);
   static const Color reportsChartBorder = Color(0xFF1E2A47);
   static const Color reportsChipSelectedBg = Color(0xFFE8ECF8);
   static const Color reportsChipUnselectedBg = Color(0xFFE9ECEF);

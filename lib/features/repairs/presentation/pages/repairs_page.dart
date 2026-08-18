@@ -1,4 +1,3 @@
-import 'package:deskcar/components/paginated_staggered_list_view.dart';
 import 'package:deskcar/components/states/app_empty_state.dart';
 import 'package:deskcar/components/states/app_error_state.dart';
 import 'package:deskcar/components/states/app_loading_state.dart';
@@ -7,9 +6,10 @@ import 'package:deskcar/core/router/app_routes.dart';
 import 'package:deskcar/features/repairs/domain/entities/service_record_entity.dart';
 import 'package:deskcar/features/repairs/presentation/cubit/repairs_cubit.dart';
 import 'package:deskcar/features/repairs/presentation/cubit/repairs_state.dart';
+import 'package:deskcar/features/repairs/presentation/utils/open_new_repair_flow.dart';
 import 'package:deskcar/features/repairs/presentation/widgets/repairs_app_bar.dart';
-import 'package:deskcar/features/repairs/presentation/widgets/select_service_bottom_sheet.dart';
-import 'package:deskcar/features/repairs/presentation/widgets/service_record_list_tile.dart';
+import 'package:deskcar/features/repairs/presentation/widgets/vehicle_notes_timeline_list.dart';
+import 'package:deskcar/features/repairs/presentation/widgets/vehicle_note_upcoming_entry.dart';
 import 'package:deskcar/theme/app_surface_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,13 +35,8 @@ class _RepairsPageState extends State<RepairsPage> {
     super.dispose();
   }
 
-  Future<void> _openNewRepairFlow(BuildContext context) async {
-    final selectedCategory = await showSelectServiceBottomSheet(context);
-    if (!context.mounted || selectedCategory == null) {
-      return;
-    }
-
-    context.push(AppRoutes.addServicePath(selectedCategory.name));
+  Future<void> _openNewRepairFlow(BuildContext context) {
+    return openNewRepairFlow(context);
   }
 
   void _startSearch() {
@@ -74,9 +69,6 @@ class _RepairsPageState extends State<RepairsPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<RepairsCubit, RepairsState>(
       builder: (context, state) {
-        final hasRecords =
-            state.status == RepairsStatus.loaded && state.records.isNotEmpty;
-
         return Scaffold(
           backgroundColor: AppSurfaceColors.cardBackground(context),
           appBar: RepairsAppBar(
@@ -106,14 +98,6 @@ class _RepairsPageState extends State<RepairsPage> {
                 onAddPressed: () => _openNewRepairFlow(context),
               ),
           },
-          floatingActionButton: hasRecords
-              ? FloatingActionButton(
-                  backgroundColor: AppSurfaceColors.fabBackground(context),
-                  foregroundColor: AppSurfaceColors.fabForeground(context),
-                  onPressed: () => _openNewRepairFlow(context),
-                  child: const Icon(Icons.add),
-                )
-              : null,
         );
       },
     );
@@ -165,26 +149,13 @@ class _RepairsList extends StatelessWidget {
       );
     }
 
-    return AppPaginatedStaggeredListView(
-      itemCount: filteredRecords.length,
+    return VehicleNotesTimelineList(
+      records: filteredRecords,
       listAnimationKey: listAnimationKey,
       animateItems: !isSearching,
-      itemKeyBuilder: (index) => filteredRecords[index].id,
-      separatorBuilder: (context, index) => Divider(
-        height: 1,
-        thickness: 1,
-        color: AppSurfaceColors.listDivider(context),
-        indent: AppSizes.cardPadding,
-        endIndent: AppSizes.cardPadding,
-      ),
-      itemBuilder: (context, index) {
-        final record = filteredRecords[index];
-
-        return ServiceRecordListTile(
-          record: record,
-          onTap: () => context.push(AppRoutes.editServicePath(record.id)),
-        );
-      },
+      upcomingEntry: resolveFuelUpcomingEntry(allRecords),
+      onRecordTap: (record) =>
+          context.push(AppRoutes.editServicePath(record.id)),
     );
   }
 }

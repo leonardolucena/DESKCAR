@@ -149,21 +149,27 @@ class ReportsCubit extends Cubit<ReportsState> {
     );
   }
 
+  static const _reportVehicleTypes = [
+    VehicleType.car,
+    VehicleType.motorcycle,
+  ];
+
   VehicleType _resolveVehicleType(
     List<VehicleEntity> allVehicles,
     VehicleType current,
   ) {
-    if (ReportsDataBuilder.vehiclesForType(allVehicles, current).isNotEmpty) {
+    if (_reportVehicleTypes.contains(current) &&
+        ReportsDataBuilder.vehiclesForType(allVehicles, current).isNotEmpty) {
       return current;
     }
 
-    for (final type in VehicleType.values) {
+    for (final type in _reportVehicleTypes) {
       if (ReportsDataBuilder.vehiclesForType(allVehicles, type).isNotEmpty) {
         return type;
       }
     }
 
-    return current;
+    return VehicleType.car;
   }
 
   String? _resolveSelectedVehicleId(
